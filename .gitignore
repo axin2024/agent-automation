@@ -1,0 +1,6 @@
+/.env
+/.local/
+/vendor/
+/dist/
+/output/
+*.log

@@ -1,0 +1,5 @@
+Agent Automation
+
+The application source and synthetic examples are distributed under Apache-2.0.
+The project includes no vendored runtime libraries, fonts, model weights or media.
+Container images, PHP, MySQL, and model services are installed by the operator under their own terms.
