@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Automation · 流程工作台</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="navigation">
+    <a href="/" class="brand">Agent Automation<span>业务流程工作台</span></a>
+    <div class="nav-items" aria-label="工作台模块">
+      <button id="design-tab" type="button" aria-pressed="true">流程设计</button>
+      <button id="runs-tab" type="button" aria-pressed="false">运行与审批</button>
+    </div>
+    <span id="environment">未连接</span>
+  </aside>
+  <main>
+    <header class="heading">
+      <div><h1>流程工作台</h1><p id="who">连接工作区后设计流程、试运行和处理审批。</p></div>
+      <form id="login" class="inline">
+        <input aria-label="环境凭据" id="token" type="password" required placeholder="环境凭据" autocomplete="off">
+        <button>连接</button>
+      </form>
+    </header>
+    <p id="message" role="status" class="message" hidden></p>
+    <section id="design" hidden>
+      <div class="toolbar card">
+        <div class="inline">
+          <label>流程名<input id="flow" value="customer-care" pattern="[a-z][a-z0-9_-]*"></label>
+          <label>当前修订<input id="active" type="number" min="0" value="0"></label>
+          <label>查看修订<input id="revision" type="number" min="1" value="1"></label>
+        </div>
+        <div class="actions">
+          <button id="open-flow" class="secondary">打开</button>
+          <button id="sample" class="secondary">载入样例</button>
+          <button id="validate" class="secondary">校验</button>
+          <button id="save">保存草稿</button>
+          <button id="publish">发布</button>
+          <button id="activate" class="secondary">切换活动版</button>
+        </div>
+      </div>
+      <div class="design-grid">
+        <section class="card graph-card">
+          <div class="title-row"><h2>节点与分支</h2><button id="add-node" class="secondary">添加节点</button></div>
+          <div id="graph" class="graph"><p class="muted">载入样例或打开已保存流程。</p></div>
+        </section>
+        <section class="card editor-card">
+          <h2>节点配置</h2>
+          <form id="node-form" hidden>
+            <div class="two">
+              <label>节点名<input id="node-id" required pattern="[a-z][a-z0-9_-]*"></label>
+              <label>类型<select id="node-kind"></select></label>
+            </div>
+            <div id="node-ports"></div>
+            <label>选项 JSON<textarea id="node-options" rows="3" spellcheck="false">{}</textarea></label>
+            <div class="actions"><button>应用到画布</button><button type="button" id="remove-node" class="secondary">移除</button></div>
+          </form>
+          <details>
+            <summary>流程 JSON 与连接映射</summary>
+            <textarea id="definition" rows="12" spellcheck="false" aria-label="流程 JSON"></textarea>
+            <button id="apply-json" class="secondary">更新画布</button>
+            <label>连接映射<textarea id="bindings" rows="4" spellcheck="false">{}</textarea></label>
+          </details>
+          <div class="actions">
+            <button id="template" class="secondary">导出模板</button>
+            <button id="demo-connect" class="secondary">初始化样例连接</button>
+          </div>
+        </section>
+      </div>
+      <section class="card trial">
+        <h2>样例试运行</h2>
+        <label>邮件事件<textarea id="event" rows="5" spellcheck="false"></textarea></label>
+        <button id="trigger">提交试运行</button>
+      </section>
+    </section>
+    <section id="operations" hidden>
+      <div class="design-grid">
+        <section class="card">
+          <div class="title-row"><h2>运行列表</h2><button id="refresh" class="secondary">刷新</button></div>
+          <select id="filter" aria-label="运行状态">
+            <option value="">所有状态</option><option>queued</option><option>waiting-input</option>
+            <option>waiting-review</option><option>waiting-receipt</option><option>completed</option>
+            <option>failed</option><option>cancelled</option>
+          </select>
+          <div id="run-list" class="run-list"></div>
+          <button id="older" class="secondary" hidden>更早的运行</button>
+        </section>
+        <section class="card detail">
+          <div class="title-row"><h2>运行详情</h2><button id="inbox" class="secondary">本地收件箱</button></div>
+          <pre id="inbox-items" hidden></pre>
+          <p id="selected-run" class="muted">选择一条运行记录。</p>
+          <section id="selected-panel" hidden>
+            <div id="timeline"></div>
+            <form id="correction" class="inline" hidden><input id="order-no" required placeholder="ORD-4001" aria-label="纠正后的订单号"><button>继续查单</button></form>
+            <section id="review" hidden>
+              <h3>待审核的草稿</h3>
+              <label>收件地址<input id="recipient" type="email"></label>
+              <label>正文<textarea id="reply" rows="4"></textarea></label>
+              <div class="actions"><button id="revise" class="secondary">另存草稿修订</button><button id="regenerate" class="secondary">刷新订单并拟稿</button><button id="approve">批准</button><button id="reject" class="secondary">拒绝</button></div>
+            </section>
+            <section id="dispatch" hidden><h3>外发回执</h3><pre id="delivery"></pre><button id="reconcile">核对收件回执</button></section>
+            <details><summary>完整运行记录</summary><pre id="run-json"></pre></details>
+          </section>
+        </section>
+      </div>
+      <section class="card trial">
+        <div class="title-row"><h2>工作区指标</h2><button id="stats" class="secondary">读取计量</button></div>
+        <pre id="metrics" hidden></pre>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "definition": {
+    "nodes": {
+      "start": {"kind":"start","edges":{"next":"classify"}},
+      "classify": {
+        "kind":"classify", "inputs":{"subject":"start.subject","body":"start.body"},
+        "edges":{"after_sale":"ticket","inquiry":"inquiry","unknown":"unclassified"}
+      },
+      "ticket": {
+        "kind":"ticket", "inputs":{"message":"start.message","category":"classify.category","order_no":"classify.order_no"},
+        "edges":{"next":"lookup"}
+      },
+      "lookup": {
+        "kind":"order", "binding":"order_source", "inputs":{"order_no":"classify.order_no"},
+        "edges":{"found":"draft","missing":"missing_order"}, "options":{"human_correction":true}
+      },
+      "draft": {
+        "kind":"draft", "binding":"draft_model",
+        "inputs":{"sender":"start.sender","subject":"start.subject","body":"start.body",
+          "order_no":"lookup.order_no","state":"lookup.state","version":"lookup.version"},
+        "edges":{"ready":"review","error":"draft_error"}, "options":{"mode":"rule","prompt_revision":"customer-reply-v1","max_tokens":220}
+      },
+      "review": {
+        "kind":"approval", "binding":"reply_inbox", "inputs":{"draft":"draft.draft"},
+        "edges":{"approved":"delivery","rejected":"declined"}, "options":{"expires_minutes":120}
+      },
+      "delivery": {
+        "kind":"deliver", "binding":"reply_inbox", "inputs":{"approval":"review.approval"},
+        "edges":{"sent":"done","error":"dispatch_error"}
+      },
+      "inquiry":{"kind":"stop","options":{"result":"general-inquiry"}},
+      "unclassified":{"kind":"stop","options":{"result":"unclassified"}},
+      "missing_order":{"kind":"stop","options":{"result":"missing-order"}},
+      "draft_error":{"kind":"stop","options":{"result":"draft-needs-manual"}},
+      "declined":{"kind":"stop","options":{"result":"declined"}},
+      "dispatch_error":{"kind":"stop","options":{"result":"dispatch-error"}},
+      "done":{"kind":"stop","options":{"result":"sent"}}
+    }
+  },
+  "bindings": {"order_source":"orders-demo","draft_model":"draft-demo","reply_inbox":"inbox-demo"},
+  "event": {
+    "message":"<sample-return-4001@example.test>",
+    "sender":"buyer@example.test",
+    "subject":"Return parcel ORD-4001",
+    "body":"I received my parcel but need to return it. Can you help with ORD-4001?"
+  }
+}
