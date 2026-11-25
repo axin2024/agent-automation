@@ -1,0 +1,7 @@
+.env
+.git
+.local
+dist
+vendor
+output
+*.log

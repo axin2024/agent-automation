@@ -1,0 +1,50 @@
+name: Validation
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  mysql:
+    runs-on: ubuntu-24.04
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: automation
+          MYSQL_USER: automation
+          MYSQL_PASSWORD: disposable-ci-user
+          MYSQL_ROOT_PASSWORD: disposable-ci-root
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 --silent" --health-interval=5s --health-timeout=3s --health-retries=25
+    env:
+      AUTOMATION_MYSQL_DSN: mysql:host=127.0.0.1;port=3306;dbname=automation;charset=utf8mb4
+      AUTOMATION_MYSQL_USER: automation
+      AUTOMATION_MYSQL_PASSWORD: disposable-ci-user
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Generate test encryption key
+        run: printf 'AUTOMATION_ENCRYPTION_KEY=%s\n' "$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - name: Validate PHP and workspace client
+        run: |
+          php -r 'foreach (["pdo_mysql", "curl", "mbstring", "openssl"] as $name) { if (!extension_loaded($name)) { fwrite(STDERR, "Missing $name\n"); exit(1); } }'
+          composer validate --strict
+          find . -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          node --check public/app.js
+      - name: Run MySQL lifecycle and capacity tests
+        run: |
+          php tests/lifecycle.php
+          php tests/load.php
+      - name: Verify container stack
+        env:
+          MYSQL_ROOT_PASSWORD: disposable-compose-root
+          AUTOMATION_MYSQL_PASSWORD: disposable-compose-user
+          AUTOMATION_BIND_PORT: 18080
+        run: |
+          trap 'docker compose down -v' EXIT
+          docker compose up --build -d
+          curl --retry 12 --retry-all-errors --retry-delay 2 --fail --silent http://127.0.0.1:18080/api/health
+          docker compose exec -T web php bin/automation.php version
+          export AUTOMATION_SMOKE_TOKEN="$(docker compose exec -T web php bin/automation.php provision ci-smoke test fixture-admin admin 1 | jq -er .token)"
+          php scripts/smoke.php http://127.0.0.1:18080

@@ -1,0 +1,55 @@
+x-workspace: &workspace
+  build: .
+  environment:
+    AUTOMATION_MYSQL_DSN: mysql:host=mysql;dbname=automation;charset=utf8mb4
+    AUTOMATION_MYSQL_USER: automation
+    AUTOMATION_MYSQL_PASSWORD: ${AUTOMATION_MYSQL_PASSWORD:?set a MySQL application password}
+    AUTOMATION_ENCRYPTION_KEY: ${AUTOMATION_ENCRYPTION_KEY:?set a 32-byte hex encryption key}
+    AUTOMATION_MODEL_URL: ${AUTOMATION_MODEL_URL:-}
+
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: automation
+      MYSQL_USER: automation
+      MYSQL_PASSWORD: ${AUTOMATION_MYSQL_PASSWORD:?set a MySQL application password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set a MySQL root password}
+    volumes:
+      - automation-db:/var/lib/mysql
+    healthcheck:
+      test: [CMD-SHELL, 'MYSQL_PWD="$$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u "$$MYSQL_USER" "$$MYSQL_DATABASE" -e "SELECT 1" >/dev/null']
+      interval: 3s
+      timeout: 2s
+      retries: 25
+    restart: unless-stopped
+  migrate:
+    <<: *workspace
+    command: [php, bin/automation.php, migrate]
+    depends_on:
+      mysql:
+        condition: service_healthy
+  web:
+    <<: *workspace
+    ports:
+      - 127.0.0.1:${AUTOMATION_BIND_PORT:-8080}:80
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, php, -r, 'exit(@file_get_contents("http://127.0.0.1/api/health") === false ? 1 : 0);']
+      interval: 10s
+      timeout: 4s
+      retries: 4
+    restart: unless-stopped
+  worker:
+    <<: *workspace
+    command: [php, bin/automation.php, worker]
+    user: www-data
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  automation-db:
