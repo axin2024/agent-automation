@@ -33,7 +33,16 @@ try {
         }
         respond(['status' => 'ready']);
     }
-    $scope = $app->access->identify($_SERVER['HTTP_AUTHORIZATION'] ?? null);
+    $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? null;
+    if ($authorization === null) {
+        foreach (getallheaders() ?: [] as $name => $value) {
+            if (strcasecmp($name, 'Authorization') === 0) {
+                $authorization = $value;
+                break;
+            }
+        }
+    }
+    $scope = $app->access->identify($authorization);
     $input = $method === 'POST' ? input() : [];
     if ($method === 'GET') {
         switch ($path) {
