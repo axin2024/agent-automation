@@ -116,6 +116,35 @@ final class Workflows
                 'subject' => 'Return inquiry for ORD-4001', 'body' => 'I need help with the parcel from ORD-4001.']]];
     }
 
+    public function previewTemplate(Scope $scope, array $template): array
+    {
+        $scope->require('author');
+        $definition = $template['definition'] ?? null;
+        $contract = $template['connection_contract'] ?? null;
+        $fixtures = $template['fixtures'] ?? null;
+        if (($template['schema'] ?? null) !== 1 ||
+            array_diff(array_keys($template), ['schema', 'definition', 'connection_contract', 'fixtures']) ||
+            !is_array($definition) || !is_array($contract) || !is_array($fixtures) ||
+            !array_is_list($fixtures) || count($fixtures) > 10) {
+            throw Problem::invalid('Expected a version 1 workflow template with up to ten email fixtures.');
+        }
+        $graph = Graph::compile($definition);
+        $required = Graph::bindingKinds($graph);
+        ksort($contract, SORT_STRING);
+        if ($contract !== $required) {
+            throw Problem::invalid('Template connection aliases do not match the workflow.');
+        }
+        $events = [];
+        foreach ($fixtures as $event) {
+            if (!is_array($event)) {
+                throw Problem::invalid('Expected a template email fixture.');
+            }
+            $events[] = Values::emailEvent($event);
+        }
+        return ['definition' => ['nodes' => $graph['nodes']], 'connection_contract' => $required, 'fixtures' => $events,
+            'connections' => $this->connections->list($scope)];
+    }
+
     private function switch(Scope $scope, string $name, int $revision): void
     {
         $this->db->exec('UPDATE workflows SET active_revision=? WHERE tenant=? AND environment=? AND flow=?',

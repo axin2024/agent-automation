@@ -1,0 +1,1 @@
+{"approvals":0,"deliveries":0,"estimated_cost":{"calls":1,"currency":"USD","estimate_micros":"112","estimated_calls":1},"mode":"local-http-contract-fixture","reason":"model-output-violates-contract","result":"draft-needs-manual","run":"a2fc1e19b764679f3b8c143f09debc86","usage":{"input_tokens":50,"output_tokens":3,"state":"failed"}}

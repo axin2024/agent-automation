@@ -8,7 +8,8 @@ use AgentAutomation\Values;
 
 require dirname(__DIR__) . '/bootstrap.php';
 
-$app = new Application(Db::connect());
+$db = Db::connect();
+$app = new Application($db);
 $scope = $app->access->identify('Bearer ' . getenv('AUTOMATION_SMOKE_TOKEN'));
 $run = $app->runs->detail($scope, $argv[1] ?? '');
 $receipts = $app->deliveries->inbox($scope);
@@ -18,4 +19,5 @@ if ($run['state'] !== 'completed' || $run['result'] !== 'sent' || ($run['ticket'
     $deliveries[0]['response_id'] !== $receipts[0]['receipt'] || $deliveries[0]['attempts'] !== 1) {
     throw new RuntimeException('Restored source order, run, ticket, delivery or receipt cannot be linked.');
 }
-echo Values::json(['restore' => 'passed', 'schema' => 2, 'receipt' => $receipts[0]['receipt'], 'attempts' => $deliveries[0]['attempts']]), PHP_EOL;
+echo Values::json(['restore' => 'passed', 'schema' => $db->one('SELECT MAX(version) AS version FROM schema_migrations')['version'],
+    'receipt' => $receipts[0]['receipt'], 'attempts' => $deliveries[0]['attempts']]), PHP_EOL;

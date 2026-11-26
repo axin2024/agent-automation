@@ -89,7 +89,7 @@ final class Connections
         $allowed = match ($kind) {
             'orders' => [],
             'inbox' => ['recipient_domain'],
-            'model' => ['model', 'fields', 'replay_body'],
+            'model' => ['model', 'fields', 'replay_body', 'rates'],
             default => throw Problem::invalid('Unknown connection capability.'),
         };
         if (array_diff(array_keys($settings), $allowed)) {
@@ -112,6 +112,16 @@ final class Connections
             throw Problem::invalid('Model fields must be approved, including order state.');
         }
         $result = ['model' => Values::text($settings['model'] ?? 'local', 'model name', 90), 'fields' => array_values(array_unique($fields))];
+        if (array_key_exists('rates', $settings)) {
+            $rates = $settings['rates'];
+            if (!is_array($rates) || array_diff(array_keys($rates), ['currency', 'input_per_million_micros', 'output_per_million_micros']) ||
+                !is_string($rates['currency'] ?? null) || preg_match('/^[A-Z]{3}$/D', $rates['currency']) !== 1) {
+                throw Problem::invalid('Model billing rates require a three-letter currency and input and output prices.');
+            }
+            $result['rates'] = ['currency' => $rates['currency'],
+                'input_per_million_micros' => Values::number($rates['input_per_million_micros'] ?? null, 'input rate', 0, 1_000_000_000_000),
+                'output_per_million_micros' => Values::number($rates['output_per_million_micros'] ?? null, 'output rate', 0, 1_000_000_000_000)];
+        }
         if (array_key_exists('replay_body', $settings)) {
             if ($scope->environment !== 'test') {
                 throw Problem::denied();

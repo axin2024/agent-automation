@@ -1,0 +1,26 @@
+{
+  "browser": "158.0.8127.36",
+  "graph_digest": "c7bf2b6d252bf1f315e06d1cd463be33730dfad273782e153c041858535a9afa",
+  "scoped_bindings": [
+    "draft_model",
+    "order_source",
+    "reply_inbox"
+  ],
+  "fixture_loaded": true,
+  "imported_revision": 1,
+  "imported_active": null,
+  "source_active": 1,
+  "extra_deliveries": 0,
+  "review_batch": {
+    "assignee_filter": "fixture-admin",
+    "evaluation_saved": true,
+    "dropped_responses": 2,
+    "restored_cursor": 1,
+    "finished_items": 2,
+    "outcomes": [
+      "applied",
+      "rejected"
+    ],
+    "stale_revision": "state-conflict"
+  }
+}

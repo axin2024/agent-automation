@@ -127,4 +127,10 @@ final class Db
         $this->exec('INSERT INTO audit(tenant,environment,actor,action,object,detail) VALUES(?,?,?,?,?,?)',
             [...$scope->keys(), $scope->actor, $action, $object, Values::json($detail)]);
     }
+
+    public function recordDuration(Scope $scope, string $run, string $kind, int $microseconds): void
+    {
+        $this->exec('INSERT INTO operation_durations(tenant,environment,run,kind,microseconds) VALUES(?,?,?,?,?)',
+            [...$scope->keys(), $run, $kind, max(0, $microseconds)]);
+    }
 }

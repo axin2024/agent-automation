@@ -58,8 +58,10 @@ final class Deliveries
             }
             $this->db->exec("UPDATE deliveries SET state='dispatching',attempts=attempts+1
                 WHERE tenant=? AND environment=? AND operation=?", [...$scope->keys(), $operation]);
+            $started = hrtime(true);
             $this->db->exec('INSERT INTO inbox(tenant,environment,operation,receipt,recipient,body) VALUES(?,?,?,?,?,?)',
                 [...$scope->keys(), $operation, bin2hex(random_bytes(16)), $approval['draft']['recipient'], $approval['draft']['body']]);
+            $this->db->recordDuration($scope, $run['id'], 'local-inbox', intdiv(hrtime(true) - $started, 1000));
             return true;
         });
         if (!$committed) {
@@ -137,7 +139,7 @@ final class Deliveries
     public function inbox(Scope $scope): array
     {
         $scope->require('operator', 'approver');
-        return $this->db->all('SELECT operation,receipt,recipient,body,received_at FROM inbox WHERE tenant=? AND environment=?
-            ORDER BY received_at DESC,receipt DESC LIMIT 100', $scope->keys());
+        return $this->db->all("SELECT operation,receipt,recipient,body,body<>'' AS body_retained,received_at FROM inbox WHERE tenant=? AND environment=?
+            ORDER BY received_at DESC,receipt DESC LIMIT 100", $scope->keys());
     }
 }

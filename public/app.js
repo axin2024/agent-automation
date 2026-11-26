@@ -5,6 +5,7 @@ const read = (id) => el(id).value.trim();
 const display = (id, content) => { el(id).textContent = content; };
 const write = (id, object) => display(id, JSON.stringify(object, null, 2));
 const nodeID = /^[a-z][a-z0-9_-]{0,63}$/;
+const utcTime = (value) => value && (value.length === 16 ? value + ':00Z' : value + 'Z');
 let token = '';
 let session = 0;
 let scope;
@@ -15,6 +16,15 @@ let selectedRun;
 let selectedApproval;
 let selectedDelivery;
 let nextPage = '';
+let runFilters = new URLSearchParams();
+let runQuery = 0;
+let approvalFilters = new URLSearchParams();
+let nextApproval = '';
+let approvalQuery = 0;
+let templatePreview;
+let batchItems = new Map();
+let preparedBatch;
+let viewedBatch;
 
 function msg(text, failed = false) {
   display('message', text);
@@ -37,7 +47,11 @@ async function request(path, data) {
   const response = await fetch('/api/' + path, options);
   const result = await response.json();
   if (expected !== session) throw new Error('环境凭据已更换');
-  if (!response.ok) throw new Error(result.message || '工作区请求失败');
+  if (!response.ok) {
+    const error = new Error(result.message || '工作区请求失败');
+    error.status = response.status;
+    throw error;
+  }
   return result;
 }
 
@@ -189,11 +203,16 @@ async function save(activate) {
 
 async function runs(reset) {
   if (reset) {
+    runQuery++;
     el('run-list').replaceChildren();
     nextPage = '';
+    el('older').hidden = true;
   }
-  const params = new URLSearchParams({ state: read('filter'), before: nextPage });
+  const expected = runQuery;
+  const params = new URLSearchParams(runFilters);
+  params.set('before', nextPage);
   const result = await request('runs?' + params.toString());
+  if (expected !== runQuery) return;
   nextPage = result.next || '';
   el('older').hidden = !nextPage;
   for (const run of result.runs) {
@@ -214,15 +233,22 @@ async function openRun(id) {
   selectedRun = run;
   selectedApproval = run.approvals.find((item) => item.node === run.cursor && ['pending', 'invalid'].includes(item.state));
   selectedDelivery = run.deliveries.find((item) => item.state !== 'rejected') || run.deliveries[0];
-  display('selected-run', run.id + ' · ' + run.state + ' · ' + (run.result || run.cursor));
+  display('selected-run', run.id + ' · ' + run.state + ' · ' + (run.result || run.cursor) +
+    (run.state === 'queued' ? ' · 最早执行 ' + run.ready_at + ' UTC' : ''));
   el('selected-panel').hidden = false;
   el('correction').hidden = run.state !== 'waiting-input' || !can('operator');
   el('review').hidden = run.state !== 'waiting-review' || !selectedApproval;
   el('dispatch').hidden = !selectedDelivery;
   el('reconcile').hidden = !can('operator') || !['dispatching', 'unknown'].includes(selectedDelivery?.state);
-  el('regenerate').hidden = el('revise').hidden = !can('approver', 'operator');
-  el('approve').hidden = el('reject').hidden = !can('approver') || selectedApproval?.state !== 'pending';
+  const assignee = selectedApproval?.assignee;
+  const mayDecide = can('approver') && (!assignee || assignee === scope.actor);
+  el('regenerate').hidden = el('revise').hidden = !can('operator') && !mayDecide;
+  el('approve').hidden = el('reject').hidden = !mayDecide || selectedApproval?.state !== 'pending';
+  el('batch-choice').hidden = el('approve').hidden;
   if (selectedApproval) {
+    display('reviewer-status', assignee ? '当前审批人 ' + assignee : '未分配');
+    el('review-assignee').value = assignee || (scope.role === 'approver' ? scope.actor : '');
+    el('review-assignment').hidden = !can('operator') && !(scope.role === 'approver' && (!assignee || assignee === scope.actor));
     el('recipient').value = selectedApproval.draft.recipient;
     el('reply').value = selectedApproval.draft.body;
   }
@@ -233,6 +259,15 @@ async function openRun(id) {
     line.textContent = item.node + ' · ' + item.outcome;
     el('timeline').append(line);
   }
+  el('evaluation').hidden = !can('operator', 'approver') || run.history.length === 0;
+  el('feedback-node').replaceChildren(...[...new Set(run.history.map((event) => event.node))].map((node) => new Option(node, node)));
+  const labels = Object.fromEntries([...el('feedback-label').options].map((option) => [option.value, option.label]));
+  const entries = run.evaluations.map((entry) => {
+    const row = document.createElement('li');
+    row.textContent = [entry.node, labels[entry.label] || entry.label, entry.actor].join(' · ');
+    return row;
+  });
+  el('feedback-records').replaceChildren(...entries);
   write('run-json', run);
 }
 
@@ -242,13 +277,128 @@ async function review(action, extra) {
     { action, revision: selectedApproval.revision, digest: selectedApproval.digest, ...extra });
   await openRun(id);
   await runs(true);
+  if (can('operator', 'approver')) await approvalQueue(true);
+}
+
+async function approvalQueue(reset) {
+  if (reset) {
+    approvalQuery++;
+    nextApproval = '';
+  }
+  const expected = approvalQuery;
+  const params = new URLSearchParams(approvalFilters);
+  params.set('after', nextApproval);
+  const result = await request('approvals?' + params.toString());
+  if (expected !== approvalQuery) return;
+  if (reset) el('approval-list').replaceChildren();
+  nextApproval = result.next || '';
+  el('more-approvals').hidden = !nextApproval;
+  for (const item of result.items) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'run-link';
+    button.textContent = item.flow + ' · ' + (item.assignee || '未分配') + ' · ' + (item.expired ? '已到期' : '待审核');
+    const ref = document.createElement('span');
+    ref.textContent = item.run + ' · ' + item.expires + ' UTC';
+    button.append(ref);
+    button.addEventListener('click', () => openRun(item.run).catch((error) => msg(error.message, true)));
+    el('approval-list').append(button);
+  }
+}
+
+function renderBatchSelection() {
+  const list = el('batch-selection');
+  list.replaceChildren();
+  for (const [key, item] of batchItems) {
+    const row = document.createElement('li');
+    row.append(item.run + ' · ' + (item.action === 'approve' ? '批准' : '拒绝') + ' · 修订 ' + item.revision + ' ');
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'secondary';
+    remove.textContent = '移出';
+    remove.addEventListener('click', () => {
+      batchItems.delete(key);
+      preparedBatch = undefined;
+      renderBatchSelection();
+    });
+    row.append(remove);
+    list.append(row);
+  }
+  el('save-batch').hidden = el('clear-batch').hidden = batchItems.size === 0;
+}
+
+function queueBatch(action) {
+  if (!can('approver') || selectedRun?.state !== 'waiting-review' || selectedApproval?.state !== 'pending') {
+    throw new Error('当前草稿已不在待审批状态');
+  }
+  const { node, revision, digest } = selectedApproval;
+  const run = selectedRun.id;
+  const key = run + '/' + node;
+  if (!batchItems.has(key) && batchItems.size >= 20) throw new Error('每批最多 20 条决定');
+  batchItems.set(key, { run, node, revision, digest, action });
+  preparedBatch = undefined;
+  renderBatchSelection();
+}
+
+function showBatch(batch) {
+  viewedBatch = batch;
+  el('batch-id').value = batch.request_id;
+  el('batch-receipt').hidden = false;
+  display('batch-progress', '已处理 ' + batch.completed + ' / ' + batch.items.length);
+  el('run-batch').hidden = batch.completed === batch.items.length;
+  const rows = batch.items.map((item) => {
+    const row = document.createElement('li');
+    const state = { pending: '未处理', applied: '已记录', rejected: '未通过' }[item.state];
+    row.textContent = [item.run, item.action === 'approve' ? '批准' : '拒绝', state, item.message].filter(Boolean).join(' · ');
+    return row;
+  });
+  el('batch-items').replaceChildren(...rows);
+}
+
+async function refreshBatches() {
+  if (!can('approver')) return;
+  const recent = await request('review-batches');
+  el('recent-batches').replaceChildren(new Option('选择批次', ''), ...recent.map((item) =>
+    new Option(item.request_id + ' · ' + item.completed + ' / ' + item.total, item.request_id)));
+  if (viewedBatch) el('recent-batches').value = viewedBatch.request_id;
+}
+
+async function batchCommand(path, body, id) {
+  const expected = session;
+  try {
+    return await request(path, body);
+  } catch (error) {
+    if (error.status || expected !== session) throw error;
+    return request('review-batches/' + id);
+  }
 }
 
 action('login', 'submit', async () => {
   session++;
+  runQuery++;
+  nextPage = '';
+  runFilters = new URLSearchParams();
+  el('run-filters').reset();
+  el('older').hidden = true;
+  approvalQuery++;
+  nextApproval = '';
+  approvalFilters = new URLSearchParams();
+  el('approval-filters').reset();
+  el('approval-list').replaceChildren();
+  el('more-approvals').hidden = true;
   token = read('token');
   el('token').value = '';
   scope = selectedRun = selectedApproval = selectedDelivery = undefined;
+  templatePreview = undefined;
+  el('template-file').value = '';
+  el('template-rebind').hidden = true;
+  el('template-connections').replaceChildren();
+  batchItems.clear();
+  preparedBatch = viewedBatch = undefined;
+  el('batch-id').value = '';
+  el('review-batches').hidden = el('batch-receipt').hidden = true;
+  el('recent-batches').replaceChildren(new Option('选择批次', ''));
+  renderBatchSelection();
   switchTab(false);
   display('environment', '核对凭据');
   display('who', '连接工作区后设计流程、试运行和处理审批。');
@@ -262,19 +412,27 @@ action('login', 'submit', async () => {
   el('revision').value = 1;
   el('bindings').value = '{}';
   el('event').value = '';
+  el('trial-time').value = '';
   [scope, contracts] = await Promise.all([request('workspace'), request('contracts')]);
   display('environment', scope.tenant + ' / ' + scope.environment);
   display('who', scope.actor + ' · ' + scope.role);
   el('node-kind').replaceChildren(...Object.keys(contracts).map((type) => new Option(type, type)));
-  for (const id of ['validate', 'add-node', 'save', 'publish', 'activate', 'template']) el(id).hidden = !can('author');
+  for (const id of ['validate', 'add-node', 'save', 'publish', 'activate', 'template', 'template-import']) el(id).hidden = !can('author');
   el('demo-connect').hidden = scope.role !== 'admin' || scope.environment !== 'test';
-  el('trigger').hidden = scope.environment !== 'test' || !can('author', 'operator', 'trigger');
+  el('trial-event').hidden = scope.environment !== 'test' || !can('author', 'operator', 'trigger');
   el('inbox').hidden = !can('operator', 'approver');
+  el('approval-queue').hidden = !can('operator', 'approver');
+  el('review-batches').hidden = !can('approver');
   switchTab(!can('author'));
-  if (!can('author') && can('operator', 'approver')) await runs(true);
+  if (!can('author') && can('operator', 'approver')) await Promise.all([runs(true), approvalQueue(true)]);
+  await refreshBatches();
 });
 action('design-tab', 'click', () => switchTab(false));
-action('runs-tab', 'click', async () => { switchTab(true); if (scope && can('operator', 'author', 'approver')) await runs(true); });
+action('runs-tab', 'click', async () => {
+  switchTab(true);
+  if (scope && can('operator', 'author', 'approver')) await runs(true);
+  if (scope && can('operator', 'approver')) await approvalQueue(true);
+});
 action('sample', 'click', sample);
 action('open-flow', 'click', async () => {
   const name = read('flow');
@@ -329,6 +487,43 @@ action('template', 'click', async () => {
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(href), 1000);
 });
+action('template-file', 'change', async () => {
+  templatePreview = undefined;
+  el('template-rebind').hidden = true;
+  el('template-connections').replaceChildren();
+  const expected = session;
+  const file = el('template-file').files[0];
+  if (!file) return;
+  if (file.size > 262144) throw new Error('模板文件不能超过 256 KiB');
+  const data = JSON.parse(await file.text());
+  if (expected !== session || el('template-file').files[0] !== file) return;
+  const preview = await request('graph/template-preview', data);
+  if (el('template-file').files[0] !== file) return;
+  templatePreview = preview;
+  for (const [alias, capability] of Object.entries(preview.connection_contract)) {
+    const label = document.createElement('label');
+    label.textContent = alias + ' · ' + capability;
+    const select = document.createElement('select');
+    select.name = alias;
+    select.required = true;
+    select.append(new Option('选择本环境连接', ''));
+    for (const connection of preview.connections.filter((entry) => entry.capability === capability)) {
+      select.append(new Option(connection.connection, connection.connection));
+    }
+    label.append(select);
+    el('template-connections').append(label);
+  }
+  el('template-rebind').hidden = false;
+});
+action('template-rebind', 'submit', () => {
+  if (!templatePreview) return;
+  const bindings = Object.fromEntries(new FormData(el('template-rebind')));
+  assignGraph(templatePreview.definition);
+  el('bindings').value = JSON.stringify(bindings, null, 2);
+  const fixture = templatePreview.fixtures[0];
+  el('event').value = scope.environment === 'test' && fixture ? JSON.stringify(fixture, null, 2) : '';
+  msg('模板已加载到画布，可以保存为草稿。');
+});
 action('demo-connect', 'click', async () => {
   const active = await request('connections');
   for (const [name, capability, settings] of [['orders-demo', 'orders', {}],
@@ -342,8 +537,11 @@ action('demo-connect', 'click', async () => {
   });
   msg('样例连接和订单已就绪');
 });
-action('trigger', 'click', async () => {
-  const result = await request('flows/' + encodeURIComponent(read('flow')) + '/events', { source: 'mailbox', event: jsonFrom('event') });
+action('trial-event', 'submit', async () => {
+  const scheduledAt = utcTime(read('trial-time'));
+  const input = { source: 'mailbox', event: jsonFrom('event') };
+  if (scheduledAt) input.scheduled_at = scheduledAt;
+  const result = await request('flows/' + encodeURIComponent(read('flow')) + '/events', input);
   msg((result.replayed ? '已有运行 ' : '已入队 ') + result.id);
   if (can('operator', 'author', 'approver')) {
     switchTab(true);
@@ -352,13 +550,65 @@ action('trigger', 'click', async () => {
   }
 });
 action('refresh', 'click', async () => { await runs(true); if (selectedRun) await openRun(selectedRun.id); });
-action('filter', 'change', () => runs(true));
+action('run-filters', 'submit', () => {
+  runFilters = new URLSearchParams({ state: read('filter'), flow: read('filter-flow'),
+    from: utcTime(read('filter-from')), until: utcTime(read('filter-until')) });
+  return runs(true);
+});
+action('approval-filters', 'submit', () => {
+  approvalFilters = new URLSearchParams({ reviewer: read('approval-reviewer'), due_before: utcTime(read('approval-due')) });
+  return approvalQueue(true);
+});
+action('more-approvals', 'click', () => approvalQueue(false));
+action('review-assignment', 'submit', async () => {
+  const id = selectedRun.id;
+  const { node, revision, assignee } = selectedApproval;
+  await request('runs/' + id + '/approvals/' + node,
+    { action: 'assign', revision, expected: assignee, assignee: read('review-assignee') || null });
+  await Promise.all([openRun(id), approvalQueue(true)]);
+});
+action('run-feedback', 'submit', async () => {
+  const id = selectedRun.id;
+  await request('runs/' + id + '/feedback', { node: read('feedback-node'), label: read('feedback-label') });
+  await openRun(id);
+});
 action('older', 'click', () => runs(false));
 action('correction', 'submit', async () => {
   await request('runs/' + selectedRun.id + '/correction', { revision: selectedRun.revision, order_no: read('order-no') });
   await openRun(selectedRun.id);
 });
 action('revise', 'click', () => review('revise', { changes: { recipient: read('recipient'), body: read('reply') } }));
+action('queue-approve', 'click', () => queueBatch('approve'));
+action('queue-reject', 'click', () => queueBatch('reject'));
+action('clear-batch', 'click', () => {
+  batchItems.clear();
+  preparedBatch = undefined;
+  renderBatchSelection();
+});
+action('save-batch', 'click', async () => {
+  if (!batchItems.size) return;
+  const pending = preparedBatch ||= { request_id: 'review-' + crypto.randomUUID(), items: [...batchItems.values()] };
+  const receipt = await batchCommand('review-batches', pending, pending.request_id);
+  if (preparedBatch === pending) {
+    batchItems.clear();
+    preparedBatch = undefined;
+    renderBatchSelection();
+  }
+  showBatch(receipt);
+  await refreshBatches();
+});
+action('find-batch', 'submit', async () => showBatch(await request('review-batches/' + encodeURIComponent(read('batch-id')))));
+action('recent-batches', 'change', async () => {
+  const id = read('recent-batches');
+  if (id) showBatch(await request('review-batches/' + id));
+});
+action('run-batch', 'click', async () => {
+  const id = viewedBatch.request_id;
+  const receipt = await batchCommand('review-batches/' + id + '/run', {}, id);
+  if (viewedBatch?.request_id === id) showBatch(receipt);
+  await Promise.all([refreshBatches(), runs(true), approvalQueue(true)]);
+  if (selectedRun) await openRun(selectedRun.id);
+});
 action('regenerate', 'click', () => review('revise', { changes: { regenerate: true } }));
 action('approve', 'click', () => review('approve', {}));
 action('reject', 'click', () => review('reject', {}));

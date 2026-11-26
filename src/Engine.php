@@ -132,7 +132,11 @@ final class Engine
     {
         $this->activeConnection($scope, $node, $version, 'orders');
         $number = $row['override_order'] ?? $input['order_no'];
+        $started = hrtime(true);
         $order = $number === '' ? null : $this->orders->get($scope, Orders::orderNumber($number));
+        if ($number !== '') {
+            $this->db->recordDuration($scope, $row['id'], 'local-orders', intdiv(hrtime(true) - $started, 1000));
+        }
         if ($order === null) {
             $detail = ['attempted' => $number, 'reason' => 'order-not-found'];
             return $node['options']['human_correction']
@@ -179,6 +183,12 @@ final class Engine
         $this->db->exec("INSERT INTO model_usage(tenant,environment,run,node,attempt,mode,provider,state,reserved_tokens)
             VALUES(?,?,?,?,?,?,?,'reserved',?)", [...$scope->keys(), $row['id'], $row['cursor'], $row['attempt'],
             $call['mode'], $call['model'], $call['reserved']]);
+        $rates = $connection['settings']['rates'] ?? null;
+        if ($call['mode'] === 'live' && $rates !== null) {
+            $this->db->exec('INSERT INTO model_costs(tenant,environment,run,node,attempt,currency,input_per_million_micros,output_per_million_micros)
+                VALUES(?,?,?,?,?,?,?,?)', [...$scope->keys(), $row['id'], $row['cursor'], $row['attempt'], $rates['currency'],
+                $rates['input_per_million_micros'], $rates['output_per_million_micros']]);
+        }
         return ['node' => $node, 'call' => $call, 'attempt' => $row['attempt'], 'cursor' => $row['cursor']];
     }
 
@@ -186,10 +196,15 @@ final class Engine
     {
         $this->db->transaction(function () use ($scope, $claim, $invocation, $result): void {
             $row = $this->fenced($scope, $claim);
-            $this->db->exec("UPDATE model_usage SET state=?,input_tokens=?,output_tokens=?,milliseconds=?
+            $updated = $this->db->exec("UPDATE model_usage SET state=?,input_tokens=?,output_tokens=?,milliseconds=?
                 WHERE tenant=? AND environment=? AND run=? AND node=? AND attempt=? AND state='reserved'",
                 [$result['state'], $result['input_tokens'] ?? null, $result['output_tokens'] ?? null, $result['milliseconds'],
                     ...$scope->keys(), $claim['id'], $invocation['cursor'], $invocation['attempt']]);
+            if ($updated === 1 && $invocation['call']['mode'] === 'live' && isset($result['input_tokens'], $result['output_tokens'])) {
+                $this->db->exec('UPDATE model_costs SET estimate_micros=(?*input_per_million_micros+?*output_per_million_micros+500000) DIV 1000000
+                    WHERE tenant=? AND environment=? AND run=? AND node=? AND attempt=?',
+                    [$result['input_tokens'], $result['output_tokens'], ...$scope->keys(), $claim['id'], $invocation['cursor'], $invocation['attempt']]);
+            }
             if ($row === null) {
                 return;
             }

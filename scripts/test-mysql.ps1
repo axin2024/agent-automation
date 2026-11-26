@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory)][string]$MySQLBin,
     [string]$Php = 'php.exe',
-    [ValidateSet('Lifecycle','Load','Live','Deployment')][string]$Scenario = 'Lifecycle'
+    [ValidateSet('Lifecycle','Load','Live','ModelContract','Deployment','Upgrade')][string]$Scenario = 'Lifecycle'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,6 +57,10 @@ GRANT ALL ON automation_test.* TO 'automation_test'@'127.0.0.1';
     Write-Output "Disposable MySQL $version"
     $drivers = [string](& $Php -r 'echo implode(",", PDO::getAvailableDrivers());')
     $extensions = if ($drivers -notmatch '\bmysql\b') { @('-d', 'extension=pdo_mysql') } else { @() }
+    if ($Scenario -eq 'Upgrade' -and $extensions.Count -gt 0) {
+        $original['AUTOMATION_TEST_PDO_MYSQL_EXTENSION'] = $env:AUTOMATION_TEST_PDO_MYSQL_EXTENSION
+        $env:AUTOMATION_TEST_PDO_MYSQL_EXTENSION = '1'
+    }
     if ($Scenario -eq 'Deployment') {
         & (Join-Path $PSScriptRoot 'test-deployment.ps1') -Php $Php -Extensions $extensions -Fixture $fixture `
             -MySQLBin $mysqlBinPath -Port $port -RootPassword $rootPassword

@@ -67,23 +67,40 @@
             <button id="template" class="secondary">导出模板</button>
             <button id="demo-connect" class="secondary">初始化样例连接</button>
           </div>
+          <details id="template-import">
+            <summary>导入模板</summary>
+            <label>模板文件<input id="template-file" type="file" accept=".json,application/json"></label>
+            <form id="template-rebind" hidden>
+              <div id="template-connections"></div>
+              <button>加载到画布</button>
+            </form>
+          </details>
         </section>
       </div>
       <section class="card trial">
         <h2>样例试运行</h2>
-        <label>邮件事件<textarea id="event" rows="5" spellcheck="false"></textarea></label>
-        <button id="trigger">提交试运行</button>
+        <form id="trial-event">
+          <label>邮件事件<textarea id="event" rows="5" spellcheck="false"></textarea></label>
+          <label>计划执行时间（UTC，可选）<input id="trial-time" type="datetime-local" step="1"></label>
+          <button id="trigger">提交试运行</button>
+        </form>
       </section>
     </section>
     <section id="operations" hidden>
       <div class="design-grid">
         <section class="card">
           <div class="title-row"><h2>运行列表</h2><button id="refresh" class="secondary">刷新</button></div>
-          <select id="filter" aria-label="运行状态">
-            <option value="">所有状态</option><option>queued</option><option>waiting-input</option>
-            <option>waiting-review</option><option>waiting-receipt</option><option>completed</option>
-            <option>failed</option><option>cancelled</option>
-          </select>
+          <form id="run-filters">
+            <label>运行状态<select id="filter">
+              <option value="">所有状态</option><option>queued</option><option>running</option><option>waiting-input</option>
+              <option>waiting-review</option><option>waiting-receipt</option><option>completed</option>
+              <option>failed</option><option>cancelled</option>
+            </select></label>
+            <label>流程标识<input id="filter-flow" maxlength="64" pattern="[a-z][a-z0-9_\-]{0,63}" placeholder="customer-care"></label>
+            <label>最早创建时间（UTC）<input id="filter-from" type="datetime-local" step="1"></label>
+            <label>创建时间早于（UTC）<input id="filter-until" type="datetime-local" step="1"></label>
+            <button class="secondary">筛选</button>
+          </form>
           <div id="run-list" class="run-list"></div>
           <button id="older" class="secondary" hidden>更早的运行</button>
         </section>
@@ -96,15 +113,59 @@
             <form id="correction" class="inline" hidden><input id="order-no" required placeholder="ORD-4001" aria-label="纠正后的订单号"><button>继续查单</button></form>
             <section id="review" hidden>
               <h3>待审核的草稿</h3>
+              <p id="reviewer-status" class="muted"></p>
+              <form id="review-assignment" hidden>
+                <label>审批人账号<input id="review-assignee" maxlength="64" pattern="[a-z][a-z0-9_\-]{0,63}"></label>
+                <button class="secondary">保存分配</button>
+              </form>
               <label>收件地址<input id="recipient" type="email"></label>
               <label>正文<textarea id="reply" rows="4"></textarea></label>
               <div class="actions"><button id="revise" class="secondary">另存草稿修订</button><button id="regenerate" class="secondary">刷新订单并拟稿</button><button id="approve">批准</button><button id="reject" class="secondary">拒绝</button></div>
+              <div id="batch-choice" class="actions" hidden><button type="button" id="queue-approve" class="secondary">加入批量批准</button><button type="button" id="queue-reject" class="secondary">加入批量拒绝</button></div>
             </section>
             <section id="dispatch" hidden><h3>外发回执</h3><pre id="delivery"></pre><button id="reconcile">核对收件回执</button></section>
+            <section id="evaluation" hidden>
+              <h3>质量抽检</h3>
+              <form id="run-feedback">
+                <label>已执行节点<select id="feedback-node" required></select></label>
+                <label>判定<select id="feedback-label" required>
+                  <option value="classification-correct">分类正确</option><option value="classification-wrong">分类错误</option>
+                  <option value="extraction-correct">字段提取正确</option><option value="extraction-wrong">字段提取错误</option>
+                  <option value="needs-human">需要人工介入</option>
+                </select></label>
+                <button class="secondary">记录判定</button>
+              </form>
+              <ul id="feedback-records"></ul>
+            </section>
             <details><summary>完整运行记录</summary><pre id="run-json"></pre></details>
           </section>
         </section>
       </div>
+      <section id="approval-queue" class="card trial" hidden>
+        <h2>审批待办</h2>
+        <form id="approval-filters">
+          <label>审批人账号<input id="approval-reviewer" maxlength="64" pattern="[a-z][a-z0-9_\-]{0,63}"></label>
+          <label>到期时间早于（UTC）<input id="approval-due" type="datetime-local" step="1"></label>
+          <button class="secondary">查询待办</button>
+        </form>
+        <div id="approval-list" class="run-list"></div>
+        <button id="more-approvals" class="secondary" hidden>更多待办</button>
+      </section>
+      <section id="review-batches" class="card trial" hidden>
+        <h2>批量审批</h2>
+        <ul id="batch-selection"></ul>
+        <div class="actions">
+          <button id="save-batch" hidden>保存选集</button>
+          <button id="clear-batch" class="secondary" hidden>清空选集</button>
+        </div>
+        <label>最近保存的选集<select id="recent-batches"><option value="">选择批次</option></select></label>
+        <form id="find-batch" class="inline"><input id="batch-id" required aria-label="审批批次标识" placeholder="审批批次标识"><button>查询</button></form>
+        <div id="batch-receipt" hidden>
+          <p id="batch-progress"></p>
+          <ol id="batch-items"></ol>
+          <button id="run-batch">执行未处理项</button>
+        </div>
+      </section>
       <section class="card trial">
         <div class="title-row"><h2>工作区指标</h2><button id="stats" class="secondary">读取计量</button></div>
         <pre id="metrics" hidden></pre>

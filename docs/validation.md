@@ -22,3 +22,56 @@
 在同一 Windows 测试环境用规则模式和单工作进程提交 1,000 个事件，含 100 个重复项。得到 900 个独立运行和 900 张工单，处理 5,400 个步骤。提交 P95 为 11.08 ms，总耗时 108.36 秒。所有运行停在待审批，投递次数为 0。 [原始计数](results/load.json)
 
 真实模型与负载场景分别用 `scripts/test-mysql.ps1 -Scenario Live` 和 `-Scenario Load` 复现。
+
+## 模板导入与重新绑定
+
+2026-11-26 在 MySQL 8.4.13 和 Chrome 158 无界面会话中，从同一工作区导出模板，选择当前环境的三个连接，并把样例和节点加载到画布。另存后，新流程的草稿摘要与来源相同，仍等待发布。原流程的活动修订仍为 1，收件箱没有增加回执。PHP 生命周期测试还验证了错误的模板版本、能力不符、无权导入和跨环境连接隔离。 [浏览器记录](results/template-browser.json)
+
+## 批量审批、运行筛选与恢复
+
+2026-11-26 使用同一版本的 Chrome 和 MySQL 验证批量审批。测试先转发请求到服务端，再断开浏览器连接，丢弃保存结果和首条审批结果。工作台从服务端读到 `1 / 2`，重新登录后从最近的批次恢复。有效决定只记录一次，已经修改的草稿返回 `state-conflict`，本地收件箱没有新增回执。生命周期测试另用独立 SQL 连接确认游标，并覆盖跨环境、跨审批人、重复项和不可访问的运行。 [浏览器记录](results/template-browser.json)
+
+工作台按流程和待审核状态定位两条样例。生命周期测试确认 UTC 时间范围左闭右开，非法日期和逆序范围返回 422，其他租户查不到样例。新版迁移从 1 经 2 到 3。独立部署再从备份恢复到另一个库，回读运行 `b0d8691e0239d31003bfbcf851a0e192` 和收件回执 `def2c5f037f0bd765979c8532eea08cf`，尝试次数为 1。
+
+运行 `scripts/test-mysql.ps1 -Scenario Deployment` 时可设置 `AUTOMATION_TEST_BROWSER_REPORT` 输出工作台验证记录。使用本地 Node.js 和 Playwright，或用 `AUTOMATION_TEST_PLAYWRIGHT` 指定 Playwright 模块。可通过 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 选择浏览器。
+
+## 审批待办、计划和保留期
+
+生命周期测试在 MySQL 8.4.13 从迁移 1 经 2、3、4 到 5，旧凭据仍有效。指定的审批人可代办，分配与决定各自记录真实操作者。越权决定、过时分配和跨环境账号被拒，工作台可筛选该审批人的待办。 [浏览器记录](results/template-browser.json)
+
+未来运行在准备时冻结版本，工作进程在到期前不领取。将测试库中的就绪时间推进至当前时刻后，运行按旧版本完成。当时新请求已按回滚版本执行。重放原计划得到同一运行，复用标识而改变计划返回 409。
+
+终态运行的正文、计量和审计分别按独立策略清理。测试先清除 1 条运行的正文及副本，再单独清理 2 条计量和 1 条审计。旧事件仍去重到同一运行，原始收件回执仍可核对，未完结运行的正文和计量保留。测试分别记录 2 次审批等待、1 次人工纠正、5 次订单查询和 1 次收件箱写入。浏览器回读了节点质检及记录人。
+
+独立部署与恢复实验在迁移 6 上回读运行 `9927dbc329fae8c479e4106981bcfc5d`、收件回执 `d6fb462f89061c5cd9801d7e749585d6`，投递尝试数为 1。
+
+修订后的流程再次接入 Qwen2.5 0.5B Instruct Q4_K_M 与 llama.cpp b12686。本机使用 4 个 CPU 线程，三条新合成工单分别使用已下单、已发货和已送达状态。3 条响应通过结构校验与业务资料核对，耗时 434、271 和 248 ms，均进入待审批，实际外发为 0。由于未配置费率，三次请求均计入用量，未生成费用估算。 [原始结果](results/live-current.json)
+
+使用 PHP 8.2.30、MySQL 8.4.13、48 MiB InnoDB 缓冲池和单工作进程重跑 1,000 封邮件。先预热 24 个咨询事件，正式样本混入 100 个重复事件。得到 900 个运行、900 张工单及 5,400 个节点步骤。入队 P95 为 9.56 ms，入队及处理总计 92.90 秒。900 笔均待审批，外发和回执均为 0。 [原始计数](results/load-current.json)
+
+前版升级试验从 `v1.0.1` 的源码快照 `634ba6aa5525987317199100b3efa68d472cecd4` 安装，保留原凭据、流程、去重键、工单及已发送但回执待确认的运行。应用迁移 3 至 6 后旧凭据仍有效，待确认运行沿原操作键回读同一回执并完成，原件只发送一次。设置 `AUTOMATION_TEST_UPGRADE_SOURCE` 为已解压的前版源码，再运行 `scripts/test-mysql.ps1 -Scenario Upgrade` 可复现。 [升级记录](results/upgrade-current.json)
+
+成本估算用合成费率和固定响应复核。夹具报告 50 个输入令牌和 3 个输出令牌，估算为 112 微美元。更换连接费率并重试同一输入后，只保留原调用及其费用快照。 [计量记录](results/model-contract.json)
+
+## 编号验收
+
+| 用例 | 本轮复核结果 | 复现入口 |
+| --- | --- | --- |
+| AC-01 | 售后样例经分类和订单查询进入待审核，咨询样例走各冻结版本的咨询分支 | `tests/lifecycle.php` |
+| AC-02 | 本地 HTTP 夹具返回缺少 `closing` 的 JSON，进入人工处理分支。无审批和投递，使用量仍有记录 | [HTTP 夹具结果](results/model-contract.json) |
+| AC-03 | 沙箱订单探测返回样例订单及版本，试运行的草稿绑定同一版本 | `tests/lifecycle.php` |
+| AC-04 | 测试身份探测生产收件连接返回 404，流程亦不能绑定其引用。生产收件箱为空 | `tests/lifecycle.php` |
+| AC-05 | 同邮件重复请求返回同运行，内容变化返回 409。负载对照确认每个唯一事件只有一张工单 | [负载结果](results/load-current.json) |
+| AC-06 | 超未完结运行额度返回 429 和 `workspace-capacity` | `tests/lifecycle.php` |
+| AC-07 | 三条合成订单提取号码并读取授权库中的对应状态，结构化拟稿保留订单事实 | [真实模型记录](results/live-current.json) |
+| AC-08 | 邮件中伪造的发信许可不会放行，通过人工纠正后仍停在待审批 | `tests/lifecycle.php` |
+| AC-09 | 公开接口批准原稿后，样例回执仅一条，备份恢复后仍可从原运行核对 | `scripts/smoke.php`、`tests/restore.php` |
+| AC-10 | 收件人改动生成新修订，旧摘要返回 409，审核员以新摘要完成决定 | `tests/lifecycle.php` |
+| AC-11 | 草稿恢复保留原订单查询输出及单条查询历史，更新订单证据后只重做拟稿节点 | `tests/lifecycle.php` |
+| AC-12 | 投递提交后丢响应，进入待查单且未增加投递次数，查单读回原回执 | `tests/lifecycle.php`、[升级记录](results/upgrade-current.json) |
+| AC-13 | 回滚后新请求走版本 1，已登记请求按冻结版本 2 完成，旧运行仍可查询原图和历史 | `tests/lifecycle.php`、`tests/upgrade.php` |
+| AC-14 | 模板不含连接密钥和本地绑定值，导入须重新选择当前环境的连接 | `tests/lifecycle.php`、[浏览器记录](results/template-browser.json) |
+| AC-15 | 错号、原查询、人工纠正和纠正后查询均可回看，质检记到具体节点和操作者 | `tests/lifecycle.php`、[浏览器记录](results/template-browser.json) |
+| AC-16 | 带发信指令的邮件只能走声明节点。模型夹具只收到允许字段，未收到发信指令或额外工具 | `tests/lifecycle.php`、[HTTP 夹具结果](results/model-contract.json) |
+
+要复现模型接口异常，将 PHP 内置 HTTP 服务的路由文件设为 `tests/fixtures/invalid-model.php`，监听 `127.0.0.1` 上单独端口。把 `AUTOMATION_MODEL_URL` 设置为该端口的 `/v1/chat/completions` 后运行 `scripts/test-mysql.ps1 -Scenario ModelContract`。

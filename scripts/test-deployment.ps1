@@ -44,6 +44,10 @@ try {
     if ($workbench.Content -notmatch '流程工作台' -or !$workbench.Headers['Content-Security-Policy']) { throw 'Workbench entry failed.' }
     $evidence = & $Php @Extensions scripts/smoke.php $baseUrl
     if ($LASTEXITCODE -ne 0) { throw 'HTTP sample failed.' }
+    if ($env:AUTOMATION_TEST_BROWSER_REPORT) {
+        node scripts/browser-template.cjs $baseUrl $env:AUTOMATION_TEST_BROWSER_REPORT
+        if ($LASTEXITCODE -ne 0) { throw 'Browser workbench scenarios failed.' }
+    }
     Stop-Process -InputObject $worker
     $worker = $null
     Stop-Process -InputObject $web

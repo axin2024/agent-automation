@@ -12,6 +12,8 @@ final class Application
     public readonly Workflows $flows;
     public readonly Runs $runs;
     public readonly Approvals $approvals;
+    public readonly ReviewBatches $reviewBatches;
+    public readonly Retention $retention;
     public readonly Deliveries $deliveries;
     public readonly Engine $engine;
 
@@ -23,6 +25,8 @@ final class Application
         $this->flows = new Workflows($db, $this->connections);
         $this->runs = new Runs($db, $this->flows, $this->orders);
         $this->approvals = new Approvals($db, $this->runs, $this->flows, $this->orders, $this->connections);
+        $this->reviewBatches = new ReviewBatches($db, $this->approvals);
+        $this->retention = new Retention($db);
         $this->deliveries = new Deliveries($db, $this->runs, $this->flows, $this->approvals);
         $this->engine = new Engine($db, $this->runs, $this->flows, $this->connections, $this->orders,
             new DraftModel($this->connections), $this->approvals, $this->deliveries);
@@ -41,6 +45,32 @@ final class Application
         });
     }
 
+    public function verifyConnection(Scope $scope, string $name, int $expected, array $fixture): array
+    {
+        $scope->require('admin');
+        return $this->db->transaction(function () use ($scope, $name, $expected, $fixture): array {
+            $connection = $this->connections->active($scope, $name, null, true) ?? throw Problem::missing();
+            if ($connection['revision'] !== $expected) {
+                throw Problem::conflict('The connection changed. Test its current revision.');
+            }
+            $result = ['connection' => $name, 'revision' => $expected, 'capability' => $connection['capability']];
+            switch ($connection['capability']) {
+                case 'orders':
+                    $order = Orders::orderNumber(Values::text($fixture['order_no'] ?? null, 'order number', 32));
+                    $row = $this->orders->get($scope, $order) ?? throw Problem::missing();
+                    return $result + ['check' => 'order-read', 'order' => $row];
+                case 'inbox':
+                    $this->connections->ensureRecipient($connection, Values::email($fixture['recipient'] ?? null));
+                    return $result + ['check' => 'recipient-allowed'];
+                case 'model':
+                    $token = $this->connections->token($scope, $connection);
+                    return $result + ['check' => 'model-settings', 'credential_configured' => $token !== '',
+                        'fields' => $connection['settings']['fields'], 'rates' => $connection['settings']['rates'] ?? null];
+            }
+            throw Problem::invalid('Unsupported connection capability.');
+        });
+    }
+
     public function statistics(Scope $scope): array
     {
         $scope->require('operator', 'author', 'approver');
@@ -53,6 +83,16 @@ final class Application
                 SUM(input_tokens) AS input_tokens,SUM(output_tokens) AS output_tokens,AVG(milliseconds) AS mean_ms
                 FROM model_usage WHERE tenant=? AND environment=? AND started_at>=UTC_DATE() GROUP BY mode,provider,state',
                 $scope->keys()),
+            'model_costs' => $this->db->all("SELECT c.currency,COUNT(*) AS calls,COUNT(c.estimate_micros) AS estimated_calls,
+                SUM(c.estimate_micros) AS estimate_micros FROM model_usage m
+                LEFT JOIN model_costs c USING(tenant,environment,run,node,attempt)
+                WHERE m.tenant=? AND m.environment=? AND m.mode='live' AND m.started_at>=UTC_DATE()
+                GROUP BY c.currency ORDER BY c.currency", $scope->keys()),
+            'operation_durations' => $this->db->all('SELECT kind,COUNT(*) AS count,SUM(microseconds) AS total_us,
+                AVG(microseconds) AS mean_us FROM operation_durations WHERE tenant=? AND environment=? GROUP BY kind ORDER BY kind',
+                $scope->keys()),
+            'evaluations' => $this->db->all("SELECT detail->>'$.label' AS label,COUNT(*) AS count FROM audit
+                WHERE tenant=? AND environment=? AND action='evaluation' GROUP BY label ORDER BY label", $scope->keys()),
         ];
     }
 
@@ -82,5 +122,12 @@ final class Application
         $value = ['node' => $node, 'label' => $label];
         $this->db->audit($scope, 'evaluation', $run, $value);
         return $value;
+    }
+
+    public function evaluations(Scope $scope, string $run): array
+    {
+        $scope->require('operator', 'author', 'approver');
+        return $this->db->all("SELECT actor,detail->>'$.node' AS node,detail->>'$.label' AS label,happened_at FROM audit
+            WHERE tenant=? AND environment=? AND action='evaluation' AND object=? ORDER BY id DESC LIMIT 50", [...$scope->keys(), $run]);
     }
 }

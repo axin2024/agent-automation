@@ -53,8 +53,11 @@ foreach ($runs as ['run' => $id, 'order' => $order, 'state' => $expected]) {
 }
 $sent = count($app->deliveries->inbox($admin));
 $passed = count(array_filter($results, static fn (array $result): bool => $result['has_expected_facts']));
+$costs = $app->statistics($admin)['model_costs'];
 echo Values::json(['model' => $model, 'passed' => $passed, 'case_count' => count($results), 'cases' => $results,
-    'inbox_receipts' => $sent]), PHP_EOL;
-if ($passed !== count($answers) || $sent !== 0) {
+    'inbox_receipts' => $sent, 'unpriced_invocations' => $costs[0]['calls'] ?? null]), PHP_EOL;
+if ($passed !== count($answers) || $sent !== 0 || $costs !== [[
+    'currency' => null, 'calls' => count($answers), 'estimated_calls' => 0, 'estimate_micros' => null,
+]]) {
     exit(1);
 }

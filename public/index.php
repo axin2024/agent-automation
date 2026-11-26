@@ -28,7 +28,7 @@ try {
     }
     $app = new Application(Db::connect());
     if ($path === '/api/health' && $method === 'GET') {
-        if ($app->db->one('SELECT version FROM schema_migrations WHERE version=2') === null) {
+        if ($app->db->one('SELECT version FROM schema_migrations WHERE version=6') === null) {
             throw new Problem(503, 'unavailable', 'Workspace migrations are required.');
         }
         respond(['status' => 'ready']);
@@ -55,7 +55,14 @@ try {
             case '/api/connections':
                 respond($app->connections->list($scope));
             case '/api/runs':
-                respond($app->runs->list($scope, queryText('state'), queryText('before')));
+                respond($app->runs->list($scope, queryText('state'), queryText('before'),
+                    queryText('flow'), queryText('from'), queryText('until')));
+            case '/api/review-batches':
+                respond($app->reviewBatches->recent($scope));
+            case '/api/approvals':
+                respond($app->approvals->pending($scope, queryText('reviewer'), queryText('due_before'), queryText('after')));
+            case '/api/retention':
+                respond($app->retention->policy($scope));
             case '/api/inbox':
                 respond($app->deliveries->inbox($scope));
             case '/api/statistics':
@@ -71,7 +78,17 @@ try {
     if ($path === '/api/limits' && $method === 'POST') {
         respond($app->limits($scope, intField($input, 'max_open', 1, 20000), intField($input, 'daily_tokens', 0, 10000000)));
     }
-    if (preg_match('~^/api/connections/([a-z][a-z0-9_-]{0,63})$~D', $path, $parts) && $method === 'POST') {
+    if ($path === '/api/retention' && $method === 'POST') {
+        respond($app->retention->configure($scope, intField($input, 'body_days', 0, 3650),
+            intField($input, 'metering_days', 0, 3650), intField($input, 'audit_days', 0, 3650)));
+    }
+    if ($path === '/api/retention/apply' && $method === 'POST') {
+        respond($app->retention->apply($scope, intField($input, 'limit', 1, 100)));
+    }
+    if (preg_match('~^/api/connections/([a-z][a-z0-9_-]{0,63})(/verify)?$~D', $path, $parts) && $method === 'POST') {
+        if (isset($parts[2])) {
+            respond($app->verifyConnection($scope, $parts[1], intField($input, 'revision', 1), arrayField($input, 'fixture')));
+        }
         $secret = $input['secret'] ?? null;
         respond($app->connections->put($scope, $parts[1], stringField($input, 'capability', 32),
             intField($input, 'expected', 0), arrayField($input, 'settings'),
@@ -81,6 +98,20 @@ try {
         $scope->require('author');
         $graph = Graph::compile(arrayField($input, 'definition'));
         respond(['graph' => $graph, 'connections' => Graph::bindingKinds($graph), 'digest' => Values::digest($graph)]);
+    }
+    if ($path === '/api/graph/template-preview' && $method === 'POST') {
+        respond($app->flows->previewTemplate($scope, $input));
+    }
+    if ($path === '/api/review-batches' && $method === 'POST') {
+        respond($app->reviewBatches->prepare($scope, stringField($input, 'request_id', 64), arrayField($input, 'items')));
+    }
+    if (preg_match('~^/api/review-batches/([a-z][a-z0-9_-]{0,63})(/run)?$~D', $path, $parts)) {
+        if ($method === 'GET' && !isset($parts[2])) {
+            respond($app->reviewBatches->get($scope, $parts[1]));
+        }
+        if ($method === 'POST' && isset($parts[2])) {
+            respond($app->reviewBatches->advance($scope, $parts[1], isset($input['limit']) ? intField($input, 'limit', 1, 20) : 20));
+        }
     }
     if (preg_match('~^/api/orders/(ORD-[0-9]{4,12})$~D', $path, $parts) && $method === 'POST') {
         respond($app->orders->put($scope, $parts[1], stringField($input, 'state', 16), intField($input, 'expected', 0)));
@@ -104,7 +135,8 @@ try {
                 case 'activate':
                     respond($app->flows->activate($scope, $flow, intField($input, 'revision', 1), intField($input, 'expected', 0)));
                 case 'events':
-                    respond($app->runs->trigger($scope, $flow, stringField($input, 'source', 64), arrayField($input, 'event')));
+                    $scheduledAt = array_key_exists('scheduled_at', $input) ? stringField($input, 'scheduled_at', 20) : null;
+                    respond($app->runs->trigger($scope, $flow, stringField($input, 'source', 64), arrayField($input, 'event'), $scheduledAt));
             }
         }
     }
@@ -115,6 +147,7 @@ try {
         if ($section === '' && $method === 'GET') {
             respond($app->runs->detail($scope, $run) + [
                 'approvals' => $app->approvals->view($scope, $run), 'deliveries' => $app->deliveries->forRun($scope, $run),
+                'evaluations' => $app->evaluations($scope, $run),
             ]);
         }
         if ($method === 'POST') {
@@ -133,6 +166,14 @@ try {
                     $action = stringField($input, 'action', 16);
                     if ($action === 'revise') {
                         respond($app->approvals->revise($scope, $run, $parts[3], $revision, arrayField($input, 'changes')));
+                    }
+                    if ($action === 'assign') {
+                        if (!array_key_exists('expected', $input) || !array_key_exists('assignee', $input)) {
+                            throw Problem::invalid('The current and new reviewer are required. Use null for unassigned.');
+                        }
+                        $expected = $input['expected'] === null ? null : Values::identifier($input['expected'], 'current reviewer');
+                        $assignee = $input['assignee'] === null ? null : Values::identifier($input['assignee'], 'new reviewer');
+                        respond($app->approvals->assign($scope, $run, $parts[3], $revision, $expected, $assignee));
                     }
                     respond($app->approvals->decide($scope, $run, $parts[3], $revision, stringField($input, 'digest', 64), $action));
             }

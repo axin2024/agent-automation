@@ -1,0 +1,1 @@
+{"dispatches":0,"duplicate_submissions":100,"elapsed_ms":92904.998,"inbox_receipts":0,"ingress_ms":7290.755,"ingress_p95_ms":9.559,"mode":"rule","mysql":"8.4.13","node_steps":5400,"peak_php_bytes":2097152,"php":"8.2.30","submissions":1000,"unique_runs":900,"unique_tickets":900,"waiting_review":900,"warmup_events":24,"workers":1}
