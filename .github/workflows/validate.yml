@@ -32,10 +32,12 @@ jobs:
           composer validate --strict
           find . -type f -name '*.php' -print0 | xargs -0 -n1 php -l
           node --check public/app.js
+          node --check public/cases.js
       - name: Run MySQL lifecycle and capacity tests
         run: |
           php tests/lifecycle.php
           php tests/load.php
+          php tests/cases.php
       - name: Verify container stack
         env:
           MYSQL_ROOT_PASSWORD: disposable-compose-root

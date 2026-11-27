@@ -16,8 +16,15 @@ final class Application
     public readonly Retention $retention;
     public readonly Deliveries $deliveries;
     public readonly Engine $engine;
+    public readonly Cases $cases;
+    public readonly CaseTemplates $caseTemplates;
+    public readonly CaseAssignments $caseAssignments;
+    public readonly CaseEvidence $caseEvidence;
+    public readonly CaseAssistant $caseAssistant;
+    public readonly CaseDecisions $caseDecisions;
+    public readonly CaseDispatch $caseDispatch;
 
-    public function __construct(public readonly Db $db)
+    public function __construct(public readonly Db $db, ?\Closure $caseClock = null)
     {
         $this->access = new Access($db);
         $this->connections = new Connections($db);
@@ -30,6 +37,14 @@ final class Application
         $this->deliveries = new Deliveries($db, $this->runs, $this->flows, $this->approvals);
         $this->engine = new Engine($db, $this->runs, $this->flows, $this->connections, $this->orders,
             new DraftModel($this->connections), $this->approvals, $this->deliveries);
+        $this->caseTemplates = new CaseTemplates($db, $this->flows);
+        $caseStore = new CaseStore($db, $this->caseTemplates, $caseClock);
+        $this->cases = new Cases($caseStore);
+        $this->caseEvidence = new CaseEvidence($caseStore);
+        $this->caseAssignments = new CaseAssignments($caseStore, $this->caseEvidence);
+        $this->caseAssistant = new CaseAssistant($caseStore, $this->caseEvidence);
+        $this->caseDecisions = new CaseDecisions($caseStore, $this->caseEvidence);
+        $this->caseDispatch = new CaseDispatch($caseStore);
     }
 
     public function limits(Scope $scope, int $maxOpen, int $dailyTokens): array

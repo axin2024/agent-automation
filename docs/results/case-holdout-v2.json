@@ -1,0 +1,3865 @@
+{
+  "by_role": {
+    "classify": {
+      "correct": 30,
+      "grounded": 20,
+      "manual": 10
+    },
+    "investigate": {
+      "correct": 30,
+      "grounded": 20,
+      "manual": 10
+    },
+    "recommend": {
+      "correct": 25,
+      "grounded": 15,
+      "manual": 15
+    }
+  },
+  "calls": 90,
+  "complete_outputs": 60,
+  "completion_tokens": 2074,
+  "evidence_shortfalls_stopped": 10,
+  "exact_label_and_citation": 85,
+  "fixture_count": 30,
+  "fixture_review_accepted": 20,
+  "grounded_complete": 55,
+  "manual_outputs": 35,
+  "mode": "live-on-loopback",
+  "model": "qwen2.5-0.5b-instruct",
+  "mysql": "8.4.13",
+  "php": "8.2.30",
+  "prompt_tokens": 8125,
+  "recommendation_fixture_review": {
+    "adopted": 15,
+    "correct_after_review": 20,
+    "corrected": 5
+  },
+  "samples": [
+    {
+      "case_id": "8d3c665bd9088fc72857cf3ca80ceb23",
+      "evidence": {
+        "order": "305821f61c08ba14ce0279c7e4216b16",
+        "payment-proof": "6aa4dc877ec8bf3de95fd250ac7a07b5"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "delivery",
+        "order_status": "placed",
+        "payment_status": "captured"
+      },
+      "missing": "customer-summary",
+      "sample": 1,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "fdfe22b9ae2664e09dc4e888330a67934ea77b112c55a517b42753e1c3eee894",
+          "matched_label_and_citations": true,
+          "proposal_id": "7eed70dc6cb7402aae929645c0c80227",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 58,
+            "metered": true,
+            "milliseconds": 1055,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 30,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3fdb9b9d1745d1dd07f61c6c2e1479ffed4b1064c12426b0452c36b6ff3266a5"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "fefc31d81b723bff5884a814e6bbdbafdd693f24e8955ef1ef8ee2cfe8e96ed1",
+          "matched_label_and_citations": true,
+          "proposal_id": "03cba5ad8176f3ad3223ad15e753845f",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "placed",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 83,
+            "metered": true,
+            "milliseconds": 358,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "0789e34652046bb7d13fbde5df91f267e40708a8b8f4c3770d90593c77b1abc7"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "5aca1aa1be9ccac7a32f73235ea87d9420c0e188e649f40f25039a541a8d19be",
+          "matched_label_and_citations": true,
+          "proposal_id": "fc2a79529bcb1bd7ec43a1f2cdbea473",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "close",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 999,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "9d0ace9eca081fcc516dd670d79b9906107e594347977658ac89c6c0118781fe"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "c46ec86e8f1279e33f513424cd49f665",
+      "evidence": {
+        "customer-summary": "f37958ade935e8092a296586e14a74b7",
+        "order": "cac597f9c0ef8621ac56d9a13caaaaff",
+        "payment-proof": "214c6a35829f55c0d5c6b02dad548538"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "388a67122eaa8fb4642c4504a3b8c551",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "shipped",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "f6524021b3e8647ac977ec218e4fd3c3",
+        "revision": {
+          "proposal_id": "06da0d7026491f4c9bb5f329a0f4be4f",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "cac597f9c0ef8621ac56d9a13caaaaff",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "214c6a35829f55c0d5c6b02dad548538",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 2,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "f37958ade935e8092a296586e14a74b7"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "aae6602ae7f3f77303ce96b03677f57b",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "f37958ade935e8092a296586e14a74b7",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 791,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3a54e1fc928cd4ad5178f02fba2afeb319e828805a3cef4ef0e471d5b97d0c9d"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "cac597f9c0ef8621ac56d9a13caaaaff"
+          ],
+          "input_hash": "2027d0d67df2d57c97a108761d76e697518c6544ccdc2aea24b9c6a397e5be3a",
+          "matched_label_and_citations": true,
+          "proposal_id": "40c5dd0aea2abd76302ee4826aa5b187",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "cac597f9c0ef8621ac56d9a13caaaaff",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 467,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "94fb83e2215b8d8db0076ff0349e1408233e7594c258dfa929c2bed9688fef45"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "214c6a35829f55c0d5c6b02dad548538",
+            "cac597f9c0ef8621ac56d9a13caaaaff"
+          ],
+          "input_hash": "31c22fca9d1518a138d76d5084edf7d8f657d5c53481f02ce8708b1bdf123775",
+          "matched_label_and_citations": true,
+          "proposal_id": "f6524021b3e8647ac977ec218e4fd3c3",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "cac597f9c0ef8621ac56d9a13caaaaff",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "214c6a35829f55c0d5c6b02dad548538",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 925,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3b355aa0594071466a1fb547e4221338d54d725267494c8194cc486e5fea13f6"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "46bfda9330e45722d4d9dc9725ef8d2d",
+      "evidence": {
+        "customer-summary": "1f35627425734ec7e5e4d4d72ae89f43",
+        "order": "eda37d430729130b59d676f21422cda6",
+        "payment-proof": "c522c677bfc997566cbcda3db212c2be"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "3e1a779389903af81ce3c3fc33fdffe5",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "quality",
+        "order_status": "shipped",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "92bfbda71c8e33d125947c3531b634c5",
+        "revision": {
+          "proposal_id": "4670ad82542f2074d70eafb424e8d95c",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "eda37d430729130b59d676f21422cda6",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "c522c677bfc997566cbcda3db212c2be",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 3,
+      "suggestions": {
+        "classify": {
+          "expected": "quality",
+          "expected_citations": [
+            "1f35627425734ec7e5e4d4d72ae89f43"
+          ],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "657a05ab3a7517f717852e1354efcf40",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "1f35627425734ec7e5e4d4d72ae89f43",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "quality"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 775,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "54fc95826910ec225e2e28539fcda5d814e5f874e2a223f2076b5a6c3822a697"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "eda37d430729130b59d676f21422cda6"
+          ],
+          "input_hash": "cb9a22397b926de109efc68f362be7df57597fbf7a0ee4e78551820fe49d6bdf",
+          "matched_label_and_citations": true,
+          "proposal_id": "094d7082db2c75927817b271c8b1df18",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "eda37d430729130b59d676f21422cda6",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 423,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "8ac745ddf73934f600261bce523b032a5be613f5b6488fd89f6aeba2c6984a56"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "c522c677bfc997566cbcda3db212c2be",
+            "eda37d430729130b59d676f21422cda6"
+          ],
+          "input_hash": "31c22fca9d1518a138d76d5084edf7d8f657d5c53481f02ce8708b1bdf123775",
+          "matched_label_and_citations": true,
+          "proposal_id": "92bfbda71c8e33d125947c3531b634c5",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "eda37d430729130b59d676f21422cda6",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "c522c677bfc997566cbcda3db212c2be",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 775,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "fd279e7ad55397f19ea2c9e513fca8daf268e56d1a946de73724d3bac6aedee9"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "91c27ee3347891c1ce34dcde1d56bbb5",
+      "evidence": {
+        "customer-summary": "54060b2b1a6087fcf373897c88bade48",
+        "payment-proof": "71a22b0a3a3d945a568d57aebf5b0512"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "other",
+        "order_status": "delivered",
+        "payment_status": "uncertain"
+      },
+      "missing": "order",
+      "sample": 4,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "07ad147a067a47c50c1dec204d039057",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 767,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "ec58d91d92708e8d6e544700440facd791a5e4d5c01b375ca613df9d71d953e5"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "a4f7298e07e1a188ebaea2fa2e98c2088cc7c7fe88ca4f6e01d017e1fd7391cc",
+          "matched_label_and_citations": true,
+          "proposal_id": "6345b0fb4ffbb8f691931d11f1852554",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "shipped",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 85,
+            "metered": true,
+            "milliseconds": 360,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 11,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "8b3dcce9ebdddaaf98690430e7359c1b317e54c015241da22c6a5b81b4887371"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "a76d2a5366242bc1b4bfffc2cae922630f65dafdd4550bd24b7d9fec9b3dcd58",
+          "matched_label_and_citations": true,
+          "proposal_id": "14af910dae923e18ee4a820d60fd8b41",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 95,
+            "metered": true,
+            "milliseconds": 827,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "8ce4e53a3c1562094689c628f58b336a25e209e0ce8e02c6737d3eee67cdf09a"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "678610f87e1abdadff2814bd8b3ebb90",
+      "evidence": {
+        "customer-summary": "1f73922d9a4c88e98429ba8c35517d9a",
+        "order": "308b9944192f25b713915cc7e385b99b",
+        "payment-proof": "6b03abdb5f11a289bf2939578142211d"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "e86fd4606f5e4126a3c22e6fe11b5a3e",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "delivery",
+        "order_status": "delivered",
+        "payment_status": "uncertain"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "07dce740620e6769b1621a0a345e84b9",
+        "revision": {
+          "proposal_id": "93399b843b99ac9117e4bfbb146375f2",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "308b9944192f25b713915cc7e385b99b",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "6b03abdb5f11a289bf2939578142211d",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "manual",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 5,
+      "suggestions": {
+        "classify": {
+          "expected": "delivery",
+          "expected_citations": [
+            "1f73922d9a4c88e98429ba8c35517d9a"
+          ],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "94aac5ee18ec2e397a5314a701aa5429",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "1f73922d9a4c88e98429ba8c35517d9a",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "delivery"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 780,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3ff86626feba23ad04d3dc979d66b898b9da6943070efba27298d4c9e9a82811"
+          }
+        },
+        "investigate": {
+          "expected": "delivered",
+          "expected_citations": [
+            "308b9944192f25b713915cc7e385b99b"
+          ],
+          "input_hash": "4585d502035861f94ceea734c4fa6932d97fd21f1d5c82f6f4ba020773bf87ac",
+          "matched_label_and_citations": true,
+          "proposal_id": "60c1285163732aad89e10d856f630db0",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "308b9944192f25b713915cc7e385b99b",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "delivered"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 430,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "e2f250c3a3866d2eb7160196bbec587b2570a3ea16bf30f087352133de30acf8"
+          }
+        },
+        "recommend": {
+          "expected": "manual",
+          "expected_citations": [
+            "308b9944192f25b713915cc7e385b99b",
+            "6b03abdb5f11a289bf2939578142211d"
+          ],
+          "input_hash": "4a1d201b9696c09a54334eee99278b06e56216902ddaac67d3d6365fec945257",
+          "matched_label_and_citations": true,
+          "proposal_id": "07dce740620e6769b1621a0a345e84b9",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "308b9944192f25b713915cc7e385b99b",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "6b03abdb5f11a289bf2939578142211d",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "manual"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 980,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "42c0b9fbe64acf8cd6ce9cf006b30e8361fe2a0956f74f5e08d23402ab3ee1b0"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "1d473ff3d2b48486b084a5d952958aa3",
+      "evidence": {
+        "customer-summary": "6ee52e6c0289df57b85291d9a6351068",
+        "order": "f73a65f52ac59f2eab64f248104206e8",
+        "payment-proof": "3fe024075e3101a2a1b577d3f0c2e4ee"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "8b9787e13249983b64b7cca63f8a8a44",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "cancelled",
+        "payment_status": "captured"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": false,
+        "based_on": "3463b248bf92dbee6ba70c776f9abed6",
+        "revision": {
+          "proposal_id": "3a7f05823d55a77975b17b83900b5c91",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "f73a65f52ac59f2eab64f248104206e8",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "3fe024075e3101a2a1b577d3f0c2e4ee",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "refund",
+          "note": "Corrected against the order and payment fixture evidence."
+        }
+      },
+      "sample": 6,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "6ee52e6c0289df57b85291d9a6351068"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "97cc697de50122d61ec72f2e7207a17f",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "6ee52e6c0289df57b85291d9a6351068",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 789,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5d01912a0bceb635b059bf5df861cd1341ff92c1c5183bc9168aae5c7cd14e06"
+          }
+        },
+        "investigate": {
+          "expected": "cancelled",
+          "expected_citations": [
+            "f73a65f52ac59f2eab64f248104206e8"
+          ],
+          "input_hash": "cfba6c0d909f75eb8181ca4c94ba412ef40e78302445b38386154a576ef3facb",
+          "matched_label_and_citations": true,
+          "proposal_id": "a28ed28c077afdee97741987fb51cb8a",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "f73a65f52ac59f2eab64f248104206e8",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "cancelled"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 410,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "8bef740c2f10efdeed76d1b7f21ff83fd2bd4cbb20609f96d9b3e6dd06968a02"
+          }
+        },
+        "recommend": {
+          "expected": "refund",
+          "expected_citations": [
+            "3fe024075e3101a2a1b577d3f0c2e4ee",
+            "f73a65f52ac59f2eab64f248104206e8"
+          ],
+          "input_hash": "9395eec2d81e5a5c1d37d89e3efad0a3c2541742297854c32007c9a8c83608e0",
+          "matched_label_and_citations": false,
+          "proposal_id": "3463b248bf92dbee6ba70c776f9abed6",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [],
+            "model_citations": [
+              "e1",
+              "e2"
+            ],
+            "model_label": "manual",
+            "reason": "unsupported-finding"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 999,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "1fce9dbb3228ddf455d62dd1b3dc5ceea5f4ce44d6da3cfb0ba7819709230740"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "2d956a8da32298c292cd3f4678b5d722",
+      "evidence": {
+        "customer-summary": "824f5d3c2b0415d574a5a730a3c3c53f",
+        "order": "d3097227a571781bd19993e6b8526ee3"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "quality",
+        "order_status": "cancelled",
+        "payment_status": "captured"
+      },
+      "missing": "payment-proof",
+      "sample": 7,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "d8ed0155cdaec946fddb3f9d4dfaab9a",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "quality",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 822,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "11e0b347e07948bf97f96b025ec400049845df37186f4f820219f87a37afd93a"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "041f527c66a721f967c60d5c529c31f1d2d17d8ab26bd0f8350dc7f6e88e5f35",
+          "matched_label_and_citations": true,
+          "proposal_id": "b39e1879822e67f66d2e5a6d28f90235",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "cancelled",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 434,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "464f84a070bc6755262586e56860d4c1a758d2f5bd83ccbe9f160dd803fbda9a"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "20ad0b7bf337028fdd9e09587fe6e0875b1751a6d5e3afa44930902e6471934e",
+          "matched_label_and_citations": true,
+          "proposal_id": "aa339ea42291a7d9ae420d556a845b58",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 83,
+            "metered": true,
+            "milliseconds": 714,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "d0c25743c316641aa6df3f84d35acc08108faf9e8082bcd313a842cadacffb30"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "c829cbf25b2a544590b78851fa9b0ddb",
+      "evidence": {
+        "customer-summary": "87e3a1b8f6e14199dc93a84af4921fb7",
+        "order": "b24eb4fd7210897eed515d57663545cb",
+        "payment-proof": "61b8c9b5c6a7d0f9bd62e54ec586347c"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "cca4896d657d11015702a90fc221a495",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "other",
+        "order_status": "placed",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "ef232be95bfabce4353f8a588880602a",
+        "revision": {
+          "proposal_id": "0989bfe57606fecbbc1c97d8259a0873",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "b24eb4fd7210897eed515d57663545cb",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "61b8c9b5c6a7d0f9bd62e54ec586347c",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 8,
+      "suggestions": {
+        "classify": {
+          "expected": "other",
+          "expected_citations": [
+            "87e3a1b8f6e14199dc93a84af4921fb7"
+          ],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "60e0f48bf7733f294f91e4d96bca83d1",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "87e3a1b8f6e14199dc93a84af4921fb7",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "other"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 792,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "d9050ad83a35dfb6afbc686acd03f6bdebec24a3f9bbf89925901080fa66cdce"
+          }
+        },
+        "investigate": {
+          "expected": "placed",
+          "expected_citations": [
+            "b24eb4fd7210897eed515d57663545cb"
+          ],
+          "input_hash": "c049534dbf6abc226d0e73e3d3cca25b726fc795aa5420cd5e89a584153f4ee1",
+          "matched_label_and_citations": true,
+          "proposal_id": "9bc506b140b7d2e561d49d336d846ee2",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "b24eb4fd7210897eed515d57663545cb",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "placed"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 431,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5a01de822b6acf79adfa743aa6b17a994ef1567feb057387d016fbcbe43bfd01"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "61b8c9b5c6a7d0f9bd62e54ec586347c",
+            "b24eb4fd7210897eed515d57663545cb"
+          ],
+          "input_hash": "5c5e40d5636e0982aeda422d0d4b28ab6beeb91b317ca41c3f9ea5bff5f2c4c5",
+          "matched_label_and_citations": true,
+          "proposal_id": "ef232be95bfabce4353f8a588880602a",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "b24eb4fd7210897eed515d57663545cb",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "61b8c9b5c6a7d0f9bd62e54ec586347c",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 964,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "6c33fcfb25d8888135434e6cd40e3bae9f6abccb573ce2ed3f90db06b696f875"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "a0c6727b3bb1fd2f444301af519b3577",
+      "evidence": {
+        "customer-summary": "510199ec718d76c4fd487bc5a3f0c988",
+        "order": "38d8f260741bb9ae18def00801f96f16",
+        "payment-proof": "865eb3b5449dc16a6b1b75a46b90bac6"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "5b94840ce1ca2b4b473031c15876528e",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "delivery",
+        "order_status": "placed",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "231b044756e1f6908c615ef81576c163",
+        "revision": {
+          "proposal_id": "d587bcbf396f607accc384a64023a335",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "38d8f260741bb9ae18def00801f96f16",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "865eb3b5449dc16a6b1b75a46b90bac6",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 9,
+      "suggestions": {
+        "classify": {
+          "expected": "delivery",
+          "expected_citations": [
+            "510199ec718d76c4fd487bc5a3f0c988"
+          ],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "4fa61de67735d9d92257e99b5bb9356a",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "510199ec718d76c4fd487bc5a3f0c988",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "delivery"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 825,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "12ec5470904c9c21ae7450fbc89de9d5160b6a8d9878d29a9047d3e1efa5c1ec"
+          }
+        },
+        "investigate": {
+          "expected": "placed",
+          "expected_citations": [
+            "38d8f260741bb9ae18def00801f96f16"
+          ],
+          "input_hash": "df58f0c194f27ff0471b2723d6b0a91afa5df545fde142188c51c88c97f6c2b4",
+          "matched_label_and_citations": true,
+          "proposal_id": "d1c7fe44102cd6216a9cf836da7bd71e",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "38d8f260741bb9ae18def00801f96f16",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "placed"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 427,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3f3c06123266cbb86c3b3b1f353c6a775ba4ee782e3714a1762942728d8f39cc"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "38d8f260741bb9ae18def00801f96f16",
+            "865eb3b5449dc16a6b1b75a46b90bac6"
+          ],
+          "input_hash": "5c5e40d5636e0982aeda422d0d4b28ab6beeb91b317ca41c3f9ea5bff5f2c4c5",
+          "matched_label_and_citations": true,
+          "proposal_id": "231b044756e1f6908c615ef81576c163",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "38d8f260741bb9ae18def00801f96f16",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "865eb3b5449dc16a6b1b75a46b90bac6",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 812,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "2ba45c0b21c9065e0fa296f5c65878ffa13747fd74d66d718e7f63b46c868b99"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "e0546e6f12e0786ad0eb8999d46a05fe",
+      "evidence": {
+        "order": "1ed6263765159c825858486a73feffe8",
+        "payment-proof": "0e25a66c202ec631bf3a96084d345df5"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "billing",
+        "order_status": "shipped",
+        "payment_status": "uncertain"
+      },
+      "missing": "customer-summary",
+      "sample": 10,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "fdfe22b9ae2664e09dc4e888330a67934ea77b112c55a517b42753e1c3eee894",
+          "matched_label_and_citations": true,
+          "proposal_id": "93a297044af63dea6ea72119ee9d1f9c",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 58,
+            "metered": true,
+            "milliseconds": 1024,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 30,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "cf981a37fedfb5ec3346a0a2e50579403791abe353fede77ec7d3557a5569fc5"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "e8a823bad22776306dbc5e2683c5be1d8a59b1ff3bdfb4a527abd70c78deaac5",
+          "matched_label_and_citations": true,
+          "proposal_id": "abbbc82dfc0b8aa8c36eebd4365a384a",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "shipped",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 84,
+            "metered": true,
+            "milliseconds": 391,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "c91fa14c11e1b45f8d343808aa22b45f35108c498d7dd1851721028b4a855232"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "0f177d941d2fb35ffd8afd6c160db817ae03a69c7dcea4797e9674c930f0af4e",
+          "matched_label_and_citations": true,
+          "proposal_id": "e9c16fe1cbaa048f412dd0a175134e2d",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 964,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f4d467fd89059c79a3ab3c6d80bd8ad93d5d14e8e8ff6aaa1920fa7f66007e29"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "59cce146efa1700de86f912d4b5e1fd5",
+      "evidence": {
+        "customer-summary": "5687136f2f0bd8d33519c2bf3062421d",
+        "order": "221186d6cdf17dee7e6c01da17ef8dda",
+        "payment-proof": "9b72565a70f316c0380c1fc46dfb09e3"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "a4a13a584232275d66480be72e011af6",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "quality",
+        "order_status": "shipped",
+        "payment_status": "uncertain"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "f5ef17b6ca367c61d03fd6f187b808f6",
+        "revision": {
+          "proposal_id": "3559698e63e2d0b55f6a377a65a45ede",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "221186d6cdf17dee7e6c01da17ef8dda",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "9b72565a70f316c0380c1fc46dfb09e3",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "manual",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 11,
+      "suggestions": {
+        "classify": {
+          "expected": "quality",
+          "expected_citations": [
+            "5687136f2f0bd8d33519c2bf3062421d"
+          ],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "c3dac85d7d761267e03503c84320b69f",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "5687136f2f0bd8d33519c2bf3062421d",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "quality"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 849,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f701d496c4a302529b68f32aaa142a07f29660d9dcbe03a6eab932880366e17e"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "221186d6cdf17dee7e6c01da17ef8dda"
+          ],
+          "input_hash": "cb9a22397b926de109efc68f362be7df57597fbf7a0ee4e78551820fe49d6bdf",
+          "matched_label_and_citations": true,
+          "proposal_id": "ca2e3ad0ddccbafed53ba0e602496ba7",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "221186d6cdf17dee7e6c01da17ef8dda",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 461,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "e5dbb0f0fcc1b4f7a0bd2093d4c113511793d07ac4d8b48be3a6cb5f10523ea3"
+          }
+        },
+        "recommend": {
+          "expected": "manual",
+          "expected_citations": [
+            "221186d6cdf17dee7e6c01da17ef8dda",
+            "9b72565a70f316c0380c1fc46dfb09e3"
+          ],
+          "input_hash": "0f177d941d2fb35ffd8afd6c160db817ae03a69c7dcea4797e9674c930f0af4e",
+          "matched_label_and_citations": true,
+          "proposal_id": "f5ef17b6ca367c61d03fd6f187b808f6",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "221186d6cdf17dee7e6c01da17ef8dda",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "9b72565a70f316c0380c1fc46dfb09e3",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "manual"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 816,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "7d9673feb7c0e48d3f8f5da1af99877093e77400d7ec220ffaeb89319802ecba"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "5bed06ec300fb2c85678d831e6bb1648",
+      "evidence": {
+        "customer-summary": "080e051ad3debb0e351e5b853e3baeb6",
+        "order": "f06d90839dd0d022e3eb7b8b8d81b147",
+        "payment-proof": "b8cf9890ecbfd4f1f4cf1e006258c0df"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "afa0b6c495c70c80be51320e4a590412",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "other",
+        "order_status": "delivered",
+        "payment_status": "captured"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": false,
+        "based_on": "05472e1b7b746341fa6221ee05eb718f",
+        "revision": {
+          "proposal_id": "47d1c8f18b9eeecd9a2cc4e567ffe0f1",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "f06d90839dd0d022e3eb7b8b8d81b147",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "b8cf9890ecbfd4f1f4cf1e006258c0df",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "refund",
+          "note": "Corrected against the order and payment fixture evidence."
+        }
+      },
+      "sample": 12,
+      "suggestions": {
+        "classify": {
+          "expected": "other",
+          "expected_citations": [
+            "080e051ad3debb0e351e5b853e3baeb6"
+          ],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "2c9a3c8a1ef63a906000269b1220e739",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "080e051ad3debb0e351e5b853e3baeb6",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "other"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 762,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "3afa01463fdab2c47927aa664a978d59c9eae242faf694b38377604af8dd0bd3"
+          }
+        },
+        "investigate": {
+          "expected": "delivered",
+          "expected_citations": [
+            "f06d90839dd0d022e3eb7b8b8d81b147"
+          ],
+          "input_hash": "f0a0098ef39e6c20946612e3043526f1f0e9e745290ae1048c48804281733814",
+          "matched_label_and_citations": true,
+          "proposal_id": "d185147503c1e3140c04f549d58ad536",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "f06d90839dd0d022e3eb7b8b8d81b147",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "delivered"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 418,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "99e8d11f325161df5f4282b6d46039c626027f128760d0c241593121e1e6fcd3"
+          }
+        },
+        "recommend": {
+          "expected": "refund",
+          "expected_citations": [
+            "b8cf9890ecbfd4f1f4cf1e006258c0df",
+            "f06d90839dd0d022e3eb7b8b8d81b147"
+          ],
+          "input_hash": "2a498ee4d36b5df15ca32e37c3147ea43cedfd0d9f8958304513d32972d2b220",
+          "matched_label_and_citations": false,
+          "proposal_id": "05472e1b7b746341fa6221ee05eb718f",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [],
+            "model_citations": [
+              "e1",
+              "e2"
+            ],
+            "model_label": "close",
+            "reason": "unsupported-finding"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 954,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "a9ad6a9f165cafefa859479fafb46e7da8fb990b17a4eec9600aaf4837bd0b2a"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "eb4d9e33ec691893fe9d56acea616659",
+      "evidence": {
+        "customer-summary": "76d59cadce9954aa9d7a08ccecd001b0",
+        "payment-proof": "65002b8155075774e45324ca39a9fecd"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "delivery",
+        "order_status": "delivered",
+        "payment_status": "captured"
+      },
+      "missing": "order",
+      "sample": 13,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "5cba0d9c036f26cccfdd00ae7ca92d66",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "delivery",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 787,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "26ac7ad4ec4140c11f3ff71045ef9e6d318a1e8b39550093b66d3873a535db5a"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "877b12f53667ec8afcc3a91a546c545c6740aa2f18d33e9ec88d8f611af294de",
+          "matched_label_and_citations": true,
+          "proposal_id": "c57b100fdb20bc9ee08d22428811ec85",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "shipped",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 85,
+            "metered": true,
+            "milliseconds": 365,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 11,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "1f03334a5910b29a89374b82f0534ed8a9d32f3d50be997e5db110b36d069ea9"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "6fe27d6a9fadc0e3e75e933a80fb416c2740c2de3f0b9cbf262be76a5e739b6a",
+          "matched_label_and_citations": true,
+          "proposal_id": "c0a05dedaf0c9a2e5517028c2f387fa8",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "close",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 95,
+            "metered": true,
+            "milliseconds": 849,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "877bfe9509fdaf2eb94124677c2a4a77b8b5cfb2100b5ee0ac358af5d41cb0c5"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "7cdc1c23de21efeabfe82176fc239a7f",
+      "evidence": {
+        "customer-summary": "9f6374198ba94294103e375312b2d163",
+        "order": "45b135b5ecfc3149546172bacab20262",
+        "payment-proof": "77286bf68f3749e55e52220816b9eeeb"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "4ced7b146b60fb2349f068ccf7c8b35e",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "cancelled",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "b8e8fefe4dd2efe305b5df25a27f1ce5",
+        "revision": {
+          "proposal_id": "9527483cffd8848a9c50bf023786c0ef",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "45b135b5ecfc3149546172bacab20262",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "77286bf68f3749e55e52220816b9eeeb",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 14,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "9f6374198ba94294103e375312b2d163"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "4a41c643ddbdbc2c701c15ea1937c12c",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "9f6374198ba94294103e375312b2d163",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 767,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "669dc36352a434d2e33346b30f5a0287fc956aabbbfa361db826c78a4d80d076"
+          }
+        },
+        "investigate": {
+          "expected": "cancelled",
+          "expected_citations": [
+            "45b135b5ecfc3149546172bacab20262"
+          ],
+          "input_hash": "cfba6c0d909f75eb8181ca4c94ba412ef40e78302445b38386154a576ef3facb",
+          "matched_label_and_citations": true,
+          "proposal_id": "8b63bda990c9239ab6d193900732b756",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "45b135b5ecfc3149546172bacab20262",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "cancelled"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 390,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "add6b75fe15a5ab06c6010877ee17147b92f75059580c46e594540d67c5c8f9d"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "45b135b5ecfc3149546172bacab20262",
+            "77286bf68f3749e55e52220816b9eeeb"
+          ],
+          "input_hash": "0a235da79f66c9e487060d3ece11a9fce626df98404213194abf08621040c866",
+          "matched_label_and_citations": true,
+          "proposal_id": "b8e8fefe4dd2efe305b5df25a27f1ce5",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "45b135b5ecfc3149546172bacab20262",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "77286bf68f3749e55e52220816b9eeeb",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 933,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "7f7e1bd57239d7bd20a50ef2580ffa47190323b5ef53111c7c782aef712082a4"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "4f80c9d64f7600fd4b59dc5add7c35fc",
+      "evidence": {
+        "customer-summary": "2c0d42bfc4482fed060511231f2ee83f",
+        "order": "d93f548945f3b770fd1d4b8017759b75",
+        "payment-proof": "4fce9a64f09300583d6504928d5bac39"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "732d5626bb21c3e6153e8ec8b0b4292c",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "quality",
+        "order_status": "cancelled",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "d6e70e79b20d74c208e68bc418e138d4",
+        "revision": {
+          "proposal_id": "b144b1e7db672b22c59155ff8f2cb590",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "d93f548945f3b770fd1d4b8017759b75",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "4fce9a64f09300583d6504928d5bac39",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 15,
+      "suggestions": {
+        "classify": {
+          "expected": "quality",
+          "expected_citations": [
+            "2c0d42bfc4482fed060511231f2ee83f"
+          ],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "263d2eea1be240362c2905ef87fe7da2",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "2c0d42bfc4482fed060511231f2ee83f",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "quality"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 794,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "fc8f61296f5037b146f87b4289c976a1ce1c102ff951f5e038f7ace902bf995a"
+          }
+        },
+        "investigate": {
+          "expected": "cancelled",
+          "expected_citations": [
+            "d93f548945f3b770fd1d4b8017759b75"
+          ],
+          "input_hash": "041f527c66a721f967c60d5c529c31f1d2d17d8ab26bd0f8350dc7f6e88e5f35",
+          "matched_label_and_citations": true,
+          "proposal_id": "984f446090b987722f6816d792711640",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "d93f548945f3b770fd1d4b8017759b75",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "cancelled"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 396,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "ed142307279c4e2dd95a88812b2511c2f93bf18d6fb17325ae854aa733c74b96"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "4fce9a64f09300583d6504928d5bac39",
+            "d93f548945f3b770fd1d4b8017759b75"
+          ],
+          "input_hash": "0a235da79f66c9e487060d3ece11a9fce626df98404213194abf08621040c866",
+          "matched_label_and_citations": true,
+          "proposal_id": "d6e70e79b20d74c208e68bc418e138d4",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "d93f548945f3b770fd1d4b8017759b75",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "4fce9a64f09300583d6504928d5bac39",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 781,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "1102cc61e3b7e6176a2ba35265b17ab0dc3bd89d304afbaa57154de3998dabf3"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "18e7a6e4391fd2cb5cc02d0700726895",
+      "evidence": {
+        "customer-summary": "9a193bf8dccf129c01f92e4b6c91289e",
+        "order": "e6aab4d2c9ca8f3a6b51d6ccedd22ea0"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "other",
+        "order_status": "placed",
+        "payment_status": "uncertain"
+      },
+      "missing": "payment-proof",
+      "sample": 16,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "c4dc15b727292a5f37f56a80d5909eae",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 781,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "b88fbad492b500d74fd9a5d7b03e1fedeb9bfcf70cbfe201d9c17b620155aaff"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "c049534dbf6abc226d0e73e3d3cca25b726fc795aa5420cd5e89a584153f4ee1",
+          "matched_label_and_citations": true,
+          "proposal_id": "e1aed25957baf7dcf0a883b50406515a",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "placed",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 409,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "7501d32feffcc221572dfc7aa4cc136d84b0ec792edb62f259d3964e0a451e86"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "80cd558bb1d25767789a99616ecab7e396dbf3cd483aa3c72b3f834511005673",
+          "matched_label_and_citations": true,
+          "proposal_id": "17be05acbf9f1802bb2639ad76d82c9d",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 83,
+            "metered": true,
+            "milliseconds": 733,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f9236161bc9f26da7b5dd886d6d8c254b90477f469016bddf13fc75945807a74"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "2e3017ecfc61b07b92886c23da39f8bb",
+      "evidence": {
+        "customer-summary": "4407214f404e0ddf0a2a407f8e37eb26",
+        "order": "86b7f04b59a7f05ec50302bf2a259c82",
+        "payment-proof": "a30263a22a3f61bfb14bfcfe7f085c9e"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "472f8b6fd7c6e9b2e79169f537df69e1",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "delivery",
+        "order_status": "placed",
+        "payment_status": "uncertain"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "ee952230da2f1d9582541e194738cca4",
+        "revision": {
+          "proposal_id": "07ab9e6d774a7e30d4a22f04a08f1ea2",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "86b7f04b59a7f05ec50302bf2a259c82",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "a30263a22a3f61bfb14bfcfe7f085c9e",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "manual",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 17,
+      "suggestions": {
+        "classify": {
+          "expected": "delivery",
+          "expected_citations": [
+            "4407214f404e0ddf0a2a407f8e37eb26"
+          ],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "fe24012ea43ddeec909b773f7466d1c6",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "4407214f404e0ddf0a2a407f8e37eb26",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "delivery"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 810,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "925a67d104fab81838ded10bde016895d2ae332a5fdd56ac71579a1f0aa31db4"
+          }
+        },
+        "investigate": {
+          "expected": "placed",
+          "expected_citations": [
+            "86b7f04b59a7f05ec50302bf2a259c82"
+          ],
+          "input_hash": "df58f0c194f27ff0471b2723d6b0a91afa5df545fde142188c51c88c97f6c2b4",
+          "matched_label_and_citations": true,
+          "proposal_id": "98bc35a19fab67a775444fbe7ff1e34e",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "86b7f04b59a7f05ec50302bf2a259c82",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "placed"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 400,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "75ca0f3cf5070e05c12da0076863dd74b9570023655a194bd90aec924364337a"
+          }
+        },
+        "recommend": {
+          "expected": "manual",
+          "expected_citations": [
+            "86b7f04b59a7f05ec50302bf2a259c82",
+            "a30263a22a3f61bfb14bfcfe7f085c9e"
+          ],
+          "input_hash": "6001cfa4607c0d5dace0910db9d26929d77d33a3e6b2f6ea8e97e6276c4cb1d9",
+          "matched_label_and_citations": true,
+          "proposal_id": "ee952230da2f1d9582541e194738cca4",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "86b7f04b59a7f05ec50302bf2a259c82",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "a30263a22a3f61bfb14bfcfe7f085c9e",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "manual"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 937,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "cdfb4489f7b73a05017003b9ae6b2d98190291b5edd0a15c7dc2528207b9e2e9"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "15ef3488f001c2daea106d935f6dd9fa",
+      "evidence": {
+        "customer-summary": "b1891f971cd14f1c8b145789899a3701",
+        "order": "4f9c48e05b70196723a6e271fbdd5631",
+        "payment-proof": "e5835bc363717831b7bd81ccf3a6bb56"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "3ba75295e3aaca88c8fd904b970e7dd1",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "shipped",
+        "payment_status": "captured"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": false,
+        "based_on": "d793558d3514b53a143abda963042dfc",
+        "revision": {
+          "proposal_id": "8420bddab8682cd528c09480299fee22",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "4f9c48e05b70196723a6e271fbdd5631",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "e5835bc363717831b7bd81ccf3a6bb56",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "refund",
+          "note": "Corrected against the order and payment fixture evidence."
+        }
+      },
+      "sample": 18,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "b1891f971cd14f1c8b145789899a3701"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "dd59aeb20ee730d24b58b128119a0e61",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "b1891f971cd14f1c8b145789899a3701",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 749,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "95a5eb62696e3e1d468b60f17c35b783fac19c28ae17392faf9c53891864a061"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "4f9c48e05b70196723a6e271fbdd5631"
+          ],
+          "input_hash": "2027d0d67df2d57c97a108761d76e697518c6544ccdc2aea24b9c6a397e5be3a",
+          "matched_label_and_citations": true,
+          "proposal_id": "50a39a5c92e215eed1ff4515ab9ad989",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "4f9c48e05b70196723a6e271fbdd5631",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 406,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "168ed40facaabecfe552858cedb6124e0f1c58a8f0d4123f68ce47b84f048b11"
+          }
+        },
+        "recommend": {
+          "expected": "refund",
+          "expected_citations": [
+            "4f9c48e05b70196723a6e271fbdd5631",
+            "e5835bc363717831b7bd81ccf3a6bb56"
+          ],
+          "input_hash": "406ecce5413763bbb11f74340f8a97430063a5ab49b8d5a272938df5aa70fccd",
+          "matched_label_and_citations": false,
+          "proposal_id": "d793558d3514b53a143abda963042dfc",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [],
+            "model_citations": [
+              "e1",
+              "e2"
+            ],
+            "model_label": "close",
+            "reason": "unsupported-finding"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 992,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5d31dc63d90854980a4d3f33671d21b80db44677d08bea5a85a3374edff1f085"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "10ee7c7c6d43c0e20b7eee02996aea04",
+      "evidence": {
+        "order": "3c3b48037c844f8c91e38ce537adfba3",
+        "payment-proof": "78080d6a7ed2dc92c25ebcf5eb60e2b7"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "quality",
+        "order_status": "shipped",
+        "payment_status": "captured"
+      },
+      "missing": "customer-summary",
+      "sample": 19,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "fdfe22b9ae2664e09dc4e888330a67934ea77b112c55a517b42753e1c3eee894",
+          "matched_label_and_citations": true,
+          "proposal_id": "e007406d76202105a5f05fb4f69e958d",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 58,
+            "metered": true,
+            "milliseconds": 978,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 30,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f958d0adc6303439c0b4451ae0ec244a0e61db48ed2bf58eb4584aeb5a56d6fd"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "e8a823bad22776306dbc5e2683c5be1d8a59b1ff3bdfb4a527abd70c78deaac5",
+          "matched_label_and_citations": true,
+          "proposal_id": "b55f3378cfea2fe8a7353ce7926d0502",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "shipped",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 84,
+            "metered": true,
+            "milliseconds": 395,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "01b77d37e8eff0b2f37b4305271c8b27f1ae09d01108a37bf1ed53fc2fffec4d"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "406ecce5413763bbb11f74340f8a97430063a5ab49b8d5a272938df5aa70fccd",
+          "matched_label_and_citations": true,
+          "proposal_id": "dd184731f994d71d5f2818cf94d4a29f",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "close",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 814,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "43bd1b9446fd9c72c569166e857f57baf5876e01e6d7487dd09e459a8bcd6e79"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "e5dcd4fbee63569246e91a3367e8f81d",
+      "evidence": {
+        "customer-summary": "16c3751ab230cb0b3cceae8129fe50ea",
+        "order": "8726f8a89a91290c768f963568d21475",
+        "payment-proof": "001712a205f13934b33731610e56a2d6"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "d47019fde832fd039dede047deada5bc",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "other",
+        "order_status": "delivered",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "5bb4a6345452ad7441a770240e7444c6",
+        "revision": {
+          "proposal_id": "32ee9988ab9d6fd43b25faee7fc6a3b3",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "8726f8a89a91290c768f963568d21475",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "001712a205f13934b33731610e56a2d6",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 20,
+      "suggestions": {
+        "classify": {
+          "expected": "other",
+          "expected_citations": [
+            "16c3751ab230cb0b3cceae8129fe50ea"
+          ],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "7da177f913644d7a9e4e18386084bd0f",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "16c3751ab230cb0b3cceae8129fe50ea",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "other"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 835,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "2abb06346c772ea696135235375f7811e819a58e86ec312fc20cac4e3a5bcfe4"
+          }
+        },
+        "investigate": {
+          "expected": "delivered",
+          "expected_citations": [
+            "8726f8a89a91290c768f963568d21475"
+          ],
+          "input_hash": "f0a0098ef39e6c20946612e3043526f1f0e9e745290ae1048c48804281733814",
+          "matched_label_and_citations": true,
+          "proposal_id": "e5cb28e94cf5dde12fe22e2c49e0aebd",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "8726f8a89a91290c768f963568d21475",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "delivered"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 477,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "05fbe7e384c6ddb09a53b5f9a5d6843d324a2c0c5882a8c93085151789c05ee4"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "001712a205f13934b33731610e56a2d6",
+            "8726f8a89a91290c768f963568d21475"
+          ],
+          "input_hash": "b3b5ddef6818c3692cbaadf549698926dd9efec7f6c98cd6b2eb410d2194b6ad",
+          "matched_label_and_citations": true,
+          "proposal_id": "5bb4a6345452ad7441a770240e7444c6",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "8726f8a89a91290c768f963568d21475",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "001712a205f13934b33731610e56a2d6",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 1008,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "7d761976e6c2c114f147ecef90eef91f3b704e4cd5307f8c75d482d49a4751df"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "4435776f7bafbdde118042fac1b3bad5",
+      "evidence": {
+        "customer-summary": "20c506851409670842a72f5021b34d36",
+        "order": "ca31b13632666f7587c16772a8a73c88",
+        "payment-proof": "7d5e7fc0aeca9a10adb0ffe040ffeb51"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "71525fbcbfe2a2cb296c58bbab4a4247",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "delivery",
+        "order_status": "delivered",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "5cb15ba8fc5c5caf5f91764c28263ff4",
+        "revision": {
+          "proposal_id": "e483870ed68b6f898e8367224789827d",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "ca31b13632666f7587c16772a8a73c88",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "7d5e7fc0aeca9a10adb0ffe040ffeb51",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 21,
+      "suggestions": {
+        "classify": {
+          "expected": "delivery",
+          "expected_citations": [
+            "20c506851409670842a72f5021b34d36"
+          ],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "9a3ec3533e0b0c492726479790d70f40",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "20c506851409670842a72f5021b34d36",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "delivery"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 832,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "91fd61762242c1c623d9746c6f1b727967d3dd9e603b859be1bfeeabcd3fd456"
+          }
+        },
+        "investigate": {
+          "expected": "delivered",
+          "expected_citations": [
+            "ca31b13632666f7587c16772a8a73c88"
+          ],
+          "input_hash": "4585d502035861f94ceea734c4fa6932d97fd21f1d5c82f6f4ba020773bf87ac",
+          "matched_label_and_citations": true,
+          "proposal_id": "a4f28d3b14898d7b5880d7d1307fcc81",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "ca31b13632666f7587c16772a8a73c88",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "delivered"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 443,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "96f5fc5e91eede0db76338179738febb97f472b111a515d9db376621b1a1cd24"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "7d5e7fc0aeca9a10adb0ffe040ffeb51",
+            "ca31b13632666f7587c16772a8a73c88"
+          ],
+          "input_hash": "b3b5ddef6818c3692cbaadf549698926dd9efec7f6c98cd6b2eb410d2194b6ad",
+          "matched_label_and_citations": true,
+          "proposal_id": "5cb15ba8fc5c5caf5f91764c28263ff4",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "ca31b13632666f7587c16772a8a73c88",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "7d5e7fc0aeca9a10adb0ffe040ffeb51",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 828,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "b6a269ec87228adf2bf6661ce03030ff4802e1cc65db300db724a4875918c842"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "1f73717d78e17b40b906dc2618e8e8fe",
+      "evidence": {
+        "customer-summary": "8a61121ab524650389b143b7962f2258",
+        "payment-proof": "cf0af6f9b98f376459fbe54fe17f89e3"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "billing",
+        "order_status": "cancelled",
+        "payment_status": "uncertain"
+      },
+      "missing": "order",
+      "sample": 22,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "30f993048352a2b3db1b98f9eadedb5b",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "billing",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 755,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "e53de90a73078d262cb7192dcae925111f921039adb56aa656ad4d8bfc3a7e9b"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "28754fd1632fe1389c36c1cbdecd4625c943bbeeef4db374ab0242f6ec49dd43",
+          "matched_label_and_citations": true,
+          "proposal_id": "ac90ffe7d93ee18c337083dc4a3a0734",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "shipped",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 85,
+            "metered": true,
+            "milliseconds": 358,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 11,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "454c17e4b5a9aec15f12728bcb38e7a8754cc5424a6beb8d05922c068935e33d"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "a76d2a5366242bc1b4bfffc2cae922630f65dafdd4550bd24b7d9fec9b3dcd58",
+          "matched_label_and_citations": true,
+          "proposal_id": "d29a7e2fdb6b8d45585ab4f01a4d405d",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "order"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 95,
+            "metered": true,
+            "milliseconds": 855,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "d3cef7e863cc61d1aeee296e7ddfdb32905a07bbe879d9ef9e7b717cb2428946"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "492af8bf27cfe3c455f75ea2bb75b958",
+      "evidence": {
+        "customer-summary": "53e753d84ea97e6b86fe2bacd5cb58a9",
+        "order": "89605b6493f61dd82673b1c60c02e963",
+        "payment-proof": "01036d2394f207597a4434e3e4fa7832"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "eb4613db856d2f9863910e1d30b6e3b5",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "quality",
+        "order_status": "cancelled",
+        "payment_status": "uncertain"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "109623bac70c4c09df3cf72fdbd442e3",
+        "revision": {
+          "proposal_id": "ed1e1053f80535e22ab409c3f9b0d807",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "89605b6493f61dd82673b1c60c02e963",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "01036d2394f207597a4434e3e4fa7832",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "manual",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 23,
+      "suggestions": {
+        "classify": {
+          "expected": "quality",
+          "expected_citations": [
+            "53e753d84ea97e6b86fe2bacd5cb58a9"
+          ],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "8905c05799877db7bf52f54c5cc35441",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "53e753d84ea97e6b86fe2bacd5cb58a9",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "quality"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 773,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "37de8bdc29ebd55f3da2194976c41e72d40069435cb4c8327cbd792df5dcc337"
+          }
+        },
+        "investigate": {
+          "expected": "cancelled",
+          "expected_citations": [
+            "89605b6493f61dd82673b1c60c02e963"
+          ],
+          "input_hash": "041f527c66a721f967c60d5c529c31f1d2d17d8ab26bd0f8350dc7f6e88e5f35",
+          "matched_label_and_citations": true,
+          "proposal_id": "b0f7f936c0c4cfdff4226aed6a4cd4b4",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "89605b6493f61dd82673b1c60c02e963",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "cancelled"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 410,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "c2ba7a201bc2cc264a2a4630cbf18ac944edb57290524786e297a54dc0871af8"
+          }
+        },
+        "recommend": {
+          "expected": "manual",
+          "expected_citations": [
+            "01036d2394f207597a4434e3e4fa7832",
+            "89605b6493f61dd82673b1c60c02e963"
+          ],
+          "input_hash": "2ebf6d0b4def302aa173f1cf79cd49090e8d307f3f299b8e1dfcb944b1fbd400",
+          "matched_label_and_citations": true,
+          "proposal_id": "109623bac70c4c09df3cf72fdbd442e3",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "89605b6493f61dd82673b1c60c02e963",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "01036d2394f207597a4434e3e4fa7832",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "manual"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 947,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "96dfc0d92adb8a4ec487e735126cd6f53d7efa50c366bee7e705ee33a747bf16"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "3e4641445ae31afdfc102aba17a9d366",
+      "evidence": {
+        "customer-summary": "7ede0bd93ecaf28b4582697ce241e4f9",
+        "order": "098e98daa862004c00081b4be1ba03cd",
+        "payment-proof": "302bd0ba47d795439fec0fbbade4a9ff"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "674d5fb5b2bbd16188ddc211430273b8",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "other",
+        "order_status": "placed",
+        "payment_status": "captured"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": false,
+        "based_on": "7c79e662784aa7f32214eb90a1cbfc44",
+        "revision": {
+          "proposal_id": "eabb6ade0232111ba7675e282ec25f46",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "098e98daa862004c00081b4be1ba03cd",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "302bd0ba47d795439fec0fbbade4a9ff",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "refund",
+          "note": "Corrected against the order and payment fixture evidence."
+        }
+      },
+      "sample": 24,
+      "suggestions": {
+        "classify": {
+          "expected": "other",
+          "expected_citations": [
+            "7ede0bd93ecaf28b4582697ce241e4f9"
+          ],
+          "input_hash": "0154223acbdc405d3331d981dccfe551356cae542d572ad2aaae7a18dae2c5a8",
+          "matched_label_and_citations": true,
+          "proposal_id": "155e0f31ebedb112c4ac10f558959de6",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "7ede0bd93ecaf28b4582697ce241e4f9",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "other"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 783,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "6cc51543c25d54b210b15ebd57ed564ac185d0bf5da80fa6eca49485b5460e64"
+          }
+        },
+        "investigate": {
+          "expected": "placed",
+          "expected_citations": [
+            "098e98daa862004c00081b4be1ba03cd"
+          ],
+          "input_hash": "c049534dbf6abc226d0e73e3d3cca25b726fc795aa5420cd5e89a584153f4ee1",
+          "matched_label_and_citations": true,
+          "proposal_id": "8ae0af00d4f36e156027e34e3edee0cc",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "098e98daa862004c00081b4be1ba03cd",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "placed"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 406,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "d2483a2ad7a322c679d368020e6ee5d4188fed285e8f80c2b47d008d01ece0f4"
+          }
+        },
+        "recommend": {
+          "expected": "refund",
+          "expected_citations": [
+            "098e98daa862004c00081b4be1ba03cd",
+            "302bd0ba47d795439fec0fbbade4a9ff"
+          ],
+          "input_hash": "5aca1aa1be9ccac7a32f73235ea87d9420c0e188e649f40f25039a541a8d19be",
+          "matched_label_and_citations": false,
+          "proposal_id": "7c79e662784aa7f32214eb90a1cbfc44",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [],
+            "model_citations": [
+              "e1",
+              "e2"
+            ],
+            "model_label": "close",
+            "reason": "unsupported-finding"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 952,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "86100b8121e7301a73f6f436c58bf3b249cb57d7eba007a6649de9cedac8b553"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "01d5f1d760ad150784245902e89afd8d",
+      "evidence": {
+        "customer-summary": "4d346a8a5b7da0223b031b19472025a7",
+        "order": "48e33a228d360244e828a759f33a7486"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "delivery",
+        "order_status": "placed",
+        "payment_status": "captured"
+      },
+      "missing": "payment-proof",
+      "sample": 25,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "9549ead8a970df61d2caaa448b4040a7",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "delivery",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 783,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "2ba2d359453bf2794b4b7e85c2e03074dfcdb8c85d8c670ac4ab16c153be4aa7"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "df58f0c194f27ff0471b2723d6b0a91afa5df545fde142188c51c88c97f6c2b4",
+          "matched_label_and_citations": true,
+          "proposal_id": "b3b011819e5735cf26d6acdff321c9ae",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "placed",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 404,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "c90fa2330b0360a928c9bf51123670111f0c9ae3b935007682c2474b7d55064d"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "80cd558bb1d25767789a99616ecab7e396dbf3cd483aa3c72b3f834511005673",
+          "matched_label_and_citations": true,
+          "proposal_id": "2e0fb4d0125600f9c9ced06950e8a59e",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "payment-proof"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 83,
+            "metered": true,
+            "milliseconds": 719,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5e2175735b24bf6faeb269137e41e6e3148424fe7f50c4de8c86fd8d37488816"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "a42ca544303b70937489a6b0a7e3d862",
+      "evidence": {
+        "customer-summary": "05bd5a21248caf3c5c8a1c70f3b365af",
+        "order": "045f241cdb0d8e59d89441c3aa8217be",
+        "payment-proof": "0896559dffc9ea508e3eac677f88faf8"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "38e73e32a9f21b5a1af76ca6bba298f5",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "shipped",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "49a7fe6906b944152dd81b4a9325db96",
+        "revision": {
+          "proposal_id": "ff23aa5e5d22e49b6d74c9d3b2e7ed2b",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "045f241cdb0d8e59d89441c3aa8217be",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "0896559dffc9ea508e3eac677f88faf8",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 26,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "05bd5a21248caf3c5c8a1c70f3b365af"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "42cb4c34ed8bd26c1a57fe02a4d3e1d4",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "05bd5a21248caf3c5c8a1c70f3b365af",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 784,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f0c0eadd1176d4538a49d90b5c2c37ef7d862247999d189e63c3f2c2853ec49b"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "045f241cdb0d8e59d89441c3aa8217be"
+          ],
+          "input_hash": "2027d0d67df2d57c97a108761d76e697518c6544ccdc2aea24b9c6a397e5be3a",
+          "matched_label_and_citations": true,
+          "proposal_id": "51fd01ef1b28e2990d79ea8b9ccbaa0a",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "045f241cdb0d8e59d89441c3aa8217be",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 576,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "a608ec289b2dd2c0d822242cb12313d75dc0c2d1c363325036592e49ee877d29"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "045f241cdb0d8e59d89441c3aa8217be",
+            "0896559dffc9ea508e3eac677f88faf8"
+          ],
+          "input_hash": "31c22fca9d1518a138d76d5084edf7d8f657d5c53481f02ce8708b1bdf123775",
+          "matched_label_and_citations": true,
+          "proposal_id": "49a7fe6906b944152dd81b4a9325db96",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "045f241cdb0d8e59d89441c3aa8217be",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "0896559dffc9ea508e3eac677f88faf8",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 920,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "ca7b3b4adc44c5fcc5f400f2553e301eea2219a9a4ec8cdc4a6fad30193b64a0"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "4ae1afe32813d31bfc21b9e1de7b98e2",
+      "evidence": {
+        "customer-summary": "9161f2d57ba3a9370364c8142bd7e927",
+        "order": "267ae9d29f2c4e7b5a673f63496d02dc",
+        "payment-proof": "f199854c55465112026e6622f4e9efff"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "fa6ce9cccb564a2aad613f6453342f4c",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "quality",
+        "order_status": "shipped",
+        "payment_status": "refunded"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "5559b1997c9b25043bd0920ee5b578a8",
+        "revision": {
+          "proposal_id": "391d97a1a52033fc42ea340e1a0e8cf6",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "267ae9d29f2c4e7b5a673f63496d02dc",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "f199854c55465112026e6622f4e9efff",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "close",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 27,
+      "suggestions": {
+        "classify": {
+          "expected": "quality",
+          "expected_citations": [
+            "9161f2d57ba3a9370364c8142bd7e927"
+          ],
+          "input_hash": "06d5295e8929c0bebb629ac287e7b9ef0f666c7ef868a2b742f3076e942c4022",
+          "matched_label_and_citations": true,
+          "proposal_id": "d1e479cd58c03bab9a37188f4405456f",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "9161f2d57ba3a9370364c8142bd7e927",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "quality"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 768,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "6b24057bd0e5121a832fac4f6fecc0da8e16f6a47f8bc63a42c2708d1017ad27"
+          }
+        },
+        "investigate": {
+          "expected": "shipped",
+          "expected_citations": [
+            "267ae9d29f2c4e7b5a673f63496d02dc"
+          ],
+          "input_hash": "cb9a22397b926de109efc68f362be7df57597fbf7a0ee4e78551820fe49d6bdf",
+          "matched_label_and_citations": true,
+          "proposal_id": "36085fd45bc28514d7fe21c19951e27c",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "267ae9d29f2c4e7b5a673f63496d02dc",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "shipped"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 426,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5c6e58b70654c85d5acb2bac2a6c419ad9311972b26ddb0c689b5fdcca5dea01"
+          }
+        },
+        "recommend": {
+          "expected": "close",
+          "expected_citations": [
+            "267ae9d29f2c4e7b5a673f63496d02dc",
+            "f199854c55465112026e6622f4e9efff"
+          ],
+          "input_hash": "31c22fca9d1518a138d76d5084edf7d8f657d5c53481f02ce8708b1bdf123775",
+          "matched_label_and_citations": true,
+          "proposal_id": "5559b1997c9b25043bd0920ee5b578a8",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "267ae9d29f2c4e7b5a673f63496d02dc",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "f199854c55465112026e6622f4e9efff",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "close"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 796,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "91db5c309427c5a56ba41513a4aad3ff5babdd013476ebf19140543a0a1c595f"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "f9c4642bfc635e55b3b32207364c94d9",
+      "evidence": {
+        "order": "5864c50e7699943e4319eed334f6db69",
+        "payment-proof": "55293b1b3bf036c2400eb2bada7a1404"
+      },
+      "final_state": "needs-evidence",
+      "inputs": {
+        "category": "other",
+        "order_status": "delivered",
+        "payment_status": "uncertain"
+      },
+      "missing": "customer-summary",
+      "sample": 28,
+      "suggestions": {
+        "classify": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "fdfe22b9ae2664e09dc4e888330a67934ea77b112c55a517b42753e1c3eee894",
+          "matched_label_and_citations": true,
+          "proposal_id": "c37a5a0e2934365b42f63f23b2065003",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "other",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 58,
+            "metered": true,
+            "milliseconds": 1010,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 30,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "b66a318227d67319816ec363df316569fe4c365ae4b838b71b1d9304ade8cbb0"
+          }
+        },
+        "investigate": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "6772ff02e71dc7de752f3f4e74da43b9aa4ee0c7992d2f1c5ecb96525cda47b4",
+          "matched_label_and_citations": true,
+          "proposal_id": "df43932a419a91a795d019cb25a4b042",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "delivered",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 84,
+            "metered": true,
+            "milliseconds": 402,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "23d90e7cd9cb108ff1cd14c541d5dc4b6f57824dcc13a493f18266c10a3fab1b"
+          }
+        },
+        "recommend": {
+          "expected": "insufficient",
+          "expected_citations": [],
+          "input_hash": "4a1d201b9696c09a54334eee99278b06e56216902ddaac67d3d6365fec945257",
+          "matched_label_and_citations": true,
+          "proposal_id": "18e63d2cfb3ba2659c5c12f61acdf49d",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [
+              "customer-summary"
+            ],
+            "model_label": "manual",
+            "reason": "insufficient-evidence"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 967,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "f333bed634611b2dbf1fc611f0210910c747edff6c4fc9eec2c147e35a2b47f3"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "6c976897a4cb8d834655c2400bd4dd27",
+      "evidence": {
+        "customer-summary": "4fd96bb136624d0511079395da549c73",
+        "order": "1e104fac9d2313aad44d9d18e7830a2d",
+        "payment-proof": "09f35e23a0730bff276a75bd92bd8900"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "e4c6f41ce5d24969fd7cd17f607e22fe",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "delivery",
+        "order_status": "delivered",
+        "payment_status": "uncertain"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": true,
+        "based_on": "e5e105c7a27fed9d211be800c6994531",
+        "revision": {
+          "proposal_id": "f5c35391c0610fdb2135df004ab40b35",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "1e104fac9d2313aad44d9d18e7830a2d",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "09f35e23a0730bff276a75bd92bd8900",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "manual",
+          "note": "Accepted against the fixture evidence."
+        }
+      },
+      "sample": 29,
+      "suggestions": {
+        "classify": {
+          "expected": "delivery",
+          "expected_citations": [
+            "4fd96bb136624d0511079395da549c73"
+          ],
+          "input_hash": "d678b2b823dfce40cfc7bd056c57917a1434763e4e8e0199d8ba494fe99d54a1",
+          "matched_label_and_citations": true,
+          "proposal_id": "f4c3597e16eda1d6e2faacaeeaef5c5a",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "4fd96bb136624d0511079395da549c73",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "delivery"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 846,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 27,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "ede309408b0802dce6854f3dfad93be0d480a5861d4a5d57ebd29fa343fceab2"
+          }
+        },
+        "investigate": {
+          "expected": "delivered",
+          "expected_citations": [
+            "1e104fac9d2313aad44d9d18e7830a2d"
+          ],
+          "input_hash": "4585d502035861f94ceea734c4fa6932d97fd21f1d5c82f6f4ba020773bf87ac",
+          "matched_label_and_citations": true,
+          "proposal_id": "cc6b1feb27314f672f240885d8cc5279",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "1e104fac9d2313aad44d9d18e7830a2d",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "delivered"
+          },
+          "usage": {
+            "input_tokens": 99,
+            "metered": true,
+            "milliseconds": 428,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 13,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "2b577c47e4195dbe9d702c0914f51fb1df9049203b94c2e3bd3dea05d443d863"
+          }
+        },
+        "recommend": {
+          "expected": "manual",
+          "expected_citations": [
+            "09f35e23a0730bff276a75bd92bd8900",
+            "1e104fac9d2313aad44d9d18e7830a2d"
+          ],
+          "input_hash": "4a1d201b9696c09a54334eee99278b06e56216902ddaac67d3d6365fec945257",
+          "matched_label_and_citations": true,
+          "proposal_id": "e5e105c7a27fed9d211be800c6994531",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "1e104fac9d2313aad44d9d18e7830a2d",
+                "kind": "order",
+                "source": "order-local"
+              },
+              {
+                "evidence_id": "09f35e23a0730bff276a75bd92bd8900",
+                "kind": "payment-proof",
+                "source": "payment-proof-local"
+              }
+            ],
+            "label": "manual"
+          },
+          "usage": {
+            "input_tokens": 109,
+            "metered": true,
+            "milliseconds": 812,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "5cfcbfed5211f0d8a0db48dde4f868d8048bd1e69034268fa183123707487df3"
+          }
+        }
+      }
+    },
+    {
+      "case_id": "aa537d3b577ee26311846503d5cf87ee",
+      "evidence": {
+        "customer-summary": "ec94893a0b77a004dc1199bc05cbaa9a",
+        "order": "18f714583e509c24b205621aacbb22a1",
+        "payment-proof": "baf0854e3519f31c66a2364868fbecd3"
+      },
+      "final_state": "review",
+      "fixture_review": {
+        "proposal_id": "e5a513cdb0b9da9bf20b865cbf091c41",
+        "state": "ready"
+      },
+      "inputs": {
+        "category": "billing",
+        "order_status": "cancelled",
+        "payment_status": "captured"
+      },
+      "missing": null,
+      "recommendation_fixture_review": {
+        "actor": "decision-owner",
+        "adopted": false,
+        "based_on": "b53cc8396d21c4f6a7d890af352d300b",
+        "revision": {
+          "proposal_id": "8d6a10e6f7531a73c44129cd2f0516ed",
+          "state": "ready"
+        },
+        "suggestion": {
+          "citations": [
+            {
+              "evidence_id": "18f714583e509c24b205621aacbb22a1",
+              "kind": "order",
+              "source": "order-local"
+            },
+            {
+              "evidence_id": "baf0854e3519f31c66a2364868fbecd3",
+              "kind": "payment-proof",
+              "source": "payment-proof-local"
+            }
+          ],
+          "label": "refund",
+          "note": "Corrected against the order and payment fixture evidence."
+        }
+      },
+      "sample": 30,
+      "suggestions": {
+        "classify": {
+          "expected": "billing",
+          "expected_citations": [
+            "ec94893a0b77a004dc1199bc05cbaa9a"
+          ],
+          "input_hash": "44df058ee01201d2778de64f3b23806bb43a3649aed4589662f0aaa093d76bdb",
+          "matched_label_and_citations": true,
+          "proposal_id": "9c7b4598aa932f0059bbeea742816e79",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "ec94893a0b77a004dc1199bc05cbaa9a",
+                "kind": "customer-summary",
+                "source": "customer-summary-local"
+              }
+            ],
+            "label": "billing"
+          },
+          "usage": {
+            "input_tokens": 73,
+            "metered": true,
+            "milliseconds": 791,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 20,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "33039d99ffea1d21e3eac2806db929e88dcef42aeb44e6c8b4a5856d597c6d32"
+          }
+        },
+        "investigate": {
+          "expected": "cancelled",
+          "expected_citations": [
+            "18f714583e509c24b205621aacbb22a1"
+          ],
+          "input_hash": "cfba6c0d909f75eb8181ca4c94ba412ef40e78302445b38386154a576ef3facb",
+          "matched_label_and_citations": true,
+          "proposal_id": "31e2427d49fe4817b24d3254264248cc",
+          "state": "ready",
+          "suggestion": {
+            "citations": [
+              {
+                "evidence_id": "18f714583e509c24b205621aacbb22a1",
+                "kind": "order",
+                "source": "order-local"
+              }
+            ],
+            "label": "cancelled"
+          },
+          "usage": {
+            "input_tokens": 98,
+            "metered": true,
+            "milliseconds": 412,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 12,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "6594d3eb5a9729799f7cd43e0b8bac35ede5f04c33ee12469fd330af2b39da93"
+          }
+        },
+        "recommend": {
+          "expected": "refund",
+          "expected_citations": [
+            "18f714583e509c24b205621aacbb22a1",
+            "baf0854e3519f31c66a2364868fbecd3"
+          ],
+          "input_hash": "9395eec2d81e5a5c1d37d89e3efad0a3c2541742297854c32007c9a8c83608e0",
+          "matched_label_and_citations": false,
+          "proposal_id": "b53cc8396d21c4f6a7d890af352d300b",
+          "state": "needs-human",
+          "suggestion": {
+            "citations": [],
+            "label": "insufficient",
+            "missing": [],
+            "model_citations": [
+              "e1",
+              "e2"
+            ],
+            "model_label": "manual",
+            "reason": "unsupported-finding"
+          },
+          "usage": {
+            "input_tokens": 108,
+            "metered": true,
+            "milliseconds": 982,
+            "mode": "live",
+            "model": "qwen2.5-0.5b-instruct",
+            "output_tokens": 32,
+            "provider": "openai-compatible-loopback",
+            "response_hash": "02f8a2a25699829a68954a2fcffb39c797ec6a65dd971f6290ad0f36415d73cd"
+          }
+        }
+      }
+    }
+  ],
+  "unapproved_dispatches": 0,
+  "weight_sha256": "ca59ca7f13d0e15a8cfa77bd17e65d24f6844b554a7b6c12e07a5f89ff76844e",
+  "engine": "llama.cpp b12686 (82dd97047)",
+  "processor": "Intel Core Ultra 7 155H",
+  "review_method": "scripted named workflow with preassigned synthetic labels"
+}

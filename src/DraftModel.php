@@ -64,21 +64,7 @@ final class DraftModel
 
     private function request(array $call): array
     {
-        $url = getenv('AUTOMATION_MODEL_URL') ?: '';
-        $target = parse_url($url);
-        $scheme = $target['scheme'] ?? '';
-        $host = $target['host'] ?? '';
-        $local = in_array($host, ['127.0.0.1', '[::1]'], true);
-        if (!$target || $host === '' || isset($target['user']) || isset($target['pass']) || isset($target['query']) ||
-            isset($target['fragment']) || !str_ends_with($target['path'] ?? '', '/v1/chat/completions') ||
-            ($scheme !== 'https' && !($scheme === 'http' && $local))) {
-            return ['state' => 'failed', 'failure' => 'provider-unavailable'];
-        }
-        $headers = ['Content-Type: application/json'];
-        if ($call['token'] !== '') {
-            $headers[] = 'Authorization: Bearer ' . $call['token'];
-        }
-        $payload = Values::json([
+        $payload = [
             'model' => $call['model'], 'temperature' => 0, 'max_tokens' => $call['max_tokens'], 'stream' => false,
             'response_format' => ['type' => 'json_schema', 'json_schema' => [
                 'name' => 'order_reply_closing', 'strict' => true, 'schema' => [
@@ -88,38 +74,14 @@ final class DraftModel
             ]],
             'messages' => [['role' => 'system', 'content' => self::SYSTEM],
                 ['role' => 'user', 'content' => Values::json($call['fields'])]],
-        ]);
-        $collected = '';
-        $request = curl_init($url);
-        curl_setopt_array($request, [
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_PROXY => '',
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
-            CURLOPT_CONNECTTIMEOUT_MS => 2500,
-            CURLOPT_TIMEOUT_MS => 20000,
-            CURLOPT_WRITEFUNCTION => static function ($handle, string $chunk) use (&$collected): int {
-                if (strlen($collected) + strlen($chunk) > 65536) {
-                    return 0;
-                }
-                $collected .= $chunk;
-                return strlen($chunk);
-            },
-        ]);
-        $success = curl_exec($request);
-        $status = (int) curl_getinfo($request, CURLINFO_HTTP_CODE);
-        curl_close($request);
-        if ($success === false) {
-            return ['state' => 'unknown', 'failure' => 'provider-response-lost'];
-        }
-        if ($status !== 200) {
-            return ['state' => 'failed', 'failure' => 'provider-http-' . $status];
+        ];
+        $http = ModelHttp::request(getenv('AUTOMATION_MODEL_URL') ?: '', $payload, $call['token']);
+        if ($http['state'] !== 'complete') {
+            return $http;
         }
         $result = [];
         try {
-            $response = Values::decode($collected);
+            $response = Values::decode($http['body']);
             $usage = $response['usage'] ?? [];
             if (is_int($usage['prompt_tokens'] ?? null) && $usage['prompt_tokens'] >= 0 &&
                 is_int($usage['completion_tokens'] ?? null) && $usage['completion_tokens'] >= 0 &&

@@ -1,0 +1,21 @@
+{
+  "browser": "158.0.8127.36",
+  "mobile_css_width": 390,
+  "browser_errors": [],
+  "token_roles": [
+    "fixture-admin",
+    "investigator",
+    "operations",
+    "finance",
+    "decision-owner"
+  ],
+  "case_id": "4c3c9023e68989501974e2bf5c574452",
+  "evidence_count": 3,
+  "decision_id": "8b98a14c275153f3da754a678f3d1bb4",
+  "receipt_id": "3d64ba73d7115101aa441a00128a205d",
+  "amount_minor": 10000,
+  "signatures": 2,
+  "final_state": "closed",
+  "timeline_events": 19,
+  "export_verified": true
+}

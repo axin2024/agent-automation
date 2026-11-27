@@ -36,12 +36,13 @@ function can(...roles) {
   return scope?.role === 'admin' || roles.includes(scope?.role);
 }
 
-async function request(path, data) {
+async function request(path, data, idempotencyKey) {
   const expected = session;
   const options = { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' };
   if (data !== undefined) {
     options.method = 'POST';
     options.headers['Content-Type'] = 'application/json';
+    if (idempotencyKey) options.headers['Idempotency-Key'] = idempotencyKey;
     options.body = JSON.stringify(data);
   }
   const response = await fetch('/api/' + path, options);
@@ -72,10 +73,12 @@ function action(id, method, callback) {
 }
 
 function switchTab(runs) {
-  el('design').hidden = !scope || runs;
-  el('operations').hidden = !scope || !runs;
-  el('design-tab').setAttribute('aria-pressed', String(!runs));
-  el('runs-tab').setAttribute('aria-pressed', String(runs));
+  el('design').hidden = !scope || runs !== false;
+  el('operations').hidden = !scope || runs !== true;
+  el('case-workspace').hidden = !scope || runs !== 'cases';
+  el('design-tab').setAttribute('aria-pressed', String(runs === false));
+  el('runs-tab').setAttribute('aria-pressed', String(runs === true));
+  el('cases-tab').setAttribute('aria-pressed', String(runs === 'cases'));
 }
 
 function assignGraph(value) {
@@ -389,6 +392,7 @@ action('login', 'submit', async () => {
   token = read('token');
   el('token').value = '';
   scope = selectedRun = selectedApproval = selectedDelivery = undefined;
+  resetCases();
   templatePreview = undefined;
   el('template-file').value = '';
   el('template-rebind').hidden = true;
@@ -423,6 +427,7 @@ action('login', 'submit', async () => {
   el('inbox').hidden = !can('operator', 'approver');
   el('approval-queue').hidden = !can('operator', 'approver');
   el('review-batches').hidden = !can('approver');
+  el('cases-tab').hidden = !can('author', 'operator', 'approver', 'trigger');
   switchTab(!can('author'));
   if (!can('author') && can('operator', 'approver')) await Promise.all([runs(true), approvalQueue(true)]);
   await refreshBatches();

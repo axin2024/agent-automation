@@ -1,0 +1,41 @@
+{
+  "attempts": 1,
+  "case_id": "e251ffd90bb866c68c02677520eb9c3d",
+  "duplicate_replayed": true,
+  "from": "1.1.0",
+  "legacy_graph_digest": "c7bf2b6d252bf1f315e06d1cd463be33730dfad273782e153c041858535a9afa",
+  "migration": [
+    7
+  ],
+  "operation": "3c12f2ec289160fd5081086b5fe02a3996f08bef466006248363c908fe7e3c05",
+  "preflight": {
+    "environment": "test",
+    "legacy_pending": [
+      {
+        "id": "0d50a499f822ceb544d3ac014e0c2cb8",
+        "state": "waiting-receipt"
+      }
+    ],
+    "legacy_runs": [
+      {
+        "state": "waiting-receipt",
+        "total": 1
+      }
+    ],
+    "ownership_conflicts": 0,
+    "schema": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "tenant": "upgrade-fixture"
+  },
+  "previous_schema": 6,
+  "receipt": "77e023443ac0f1217af0c4c2a5ffc390",
+  "run": "0d50a499f822ceb544d3ac014e0c2cb8",
+  "run_links": 1,
+  "ticket": "547841c9f0f6d912470ce8d91ddb7386"
+}

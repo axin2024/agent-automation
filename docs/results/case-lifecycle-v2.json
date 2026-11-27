@@ -1,0 +1,26 @@
+{
+  "amount_minor": 10000,
+  "fabricated_citations_rejected": 1,
+  "final_state": "closed",
+  "fixture_calls": 4,
+  "monday_notifications": 1,
+  "parallel_reviews": 2,
+  "receipts": 2,
+  "schema": 7,
+  "stale_suggestions": 4,
+  "tested": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "A6",
+    "A7",
+    "A8",
+    "A9",
+    "A10",
+    "A11",
+    "A12"
+  ],
+  "weekend_notifications": 0
+}

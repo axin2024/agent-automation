@@ -6,6 +6,7 @@
   <title>Agent Automation · 流程工作台</title>
   <link rel="stylesheet" href="/app.css">
   <script src="/app.js" defer></script>
+  <script src="/cases.js" defer></script>
 </head>
 <body>
   <aside class="navigation">
@@ -13,6 +14,7 @@
     <div class="nav-items" aria-label="工作台模块">
       <button id="design-tab" type="button" aria-pressed="true">流程设计</button>
       <button id="runs-tab" type="button" aria-pressed="false">运行与审批</button>
+      <button id="cases-tab" type="button" aria-pressed="false" hidden>案件</button>
     </div>
     <span id="environment">未连接</span>
   </aside>
@@ -170,6 +172,121 @@
         <div class="title-row"><h2>工作区指标</h2><button id="stats" class="secondary">读取计量</button></div>
         <pre id="metrics" hidden></pre>
       </section>
+    </section>
+    <section id="case-workspace" hidden>
+      <div class="case-grid">
+        <div class="case-column">
+          <section id="case-queue-panel" class="card">
+            <div class="title-row"><h2>案件待办</h2><button id="case-refresh" class="secondary">刷新</button></div>
+            <form id="case-filters">
+              <label>案件状态
+                <select id="case-state">
+                  <option value="">所有状态</option><option value="investigating">调查中</option><option value="needs-evidence">待补件</option>
+                  <option value="review">部门复核</option><option value="decision">拟办</option><option value="awaiting-votes">待批准</option>
+                  <option value="ready-to-dispatch">待执行</option><option value="reconcile">待查单</option><option value="closed">已办结</option>
+                </select>
+              </label>
+              <label>搜索<input id="case-search" maxlength="64" placeholder="案件号、外部单号或诉求"></label>
+              <label>到期时间早于（UTC）<input id="case-due" type="datetime-local" step="1"></label>
+              <label class="case-check"><input id="case-mine" type="checkbox"> 仅我的待办</label>
+              <button class="secondary">筛选案件</button>
+            </form>
+            <div id="case-list" class="run-list"></div>
+          </section>
+          <details id="case-intake-panel" class="card">
+            <summary>受理案件</summary>
+            <form id="case-intake">
+              <label>模板<input id="case-type" required list="case-types" value="returns" maxlength="64"></label>
+              <datalist id="case-types"></datalist>
+              <label>来源<input id="case-source" value="after-sales" required maxlength="64"></label>
+              <label>外部单号<input id="case-external" required maxlength="128"></label>
+              <label>客户编号<input id="case-customer" required maxlength="96"></label>
+              <label>订单号<input id="case-order" maxlength="32"></label>
+              <label>诉求摘要<input id="case-subject" required maxlength="350"></label>
+              <button>受理</button>
+            </form>
+          </details>
+          <details id="case-template-panel" class="card" hidden>
+            <summary>模板与督办</summary>
+            <form id="case-template">
+              <label>模板<input id="template-case-type" value="returns" required></label>
+              <label>已有版本<input id="template-case-revision" type="number" min="0" value="0" required></label>
+              <label>阶段、人员、证据与工作日历<textarea id="template-case-json" rows="12" required spellcheck="false"></textarea></label>
+              <div class="actions">
+                <button id="case-template-preview" type="button" class="secondary">预演</button>
+                <button id="case-template-open" type="button" class="secondary">读取最新</button>
+                <button>发布模板</button>
+              </div>
+            </form>
+            <div class="actions">
+              <button id="case-metrics-load" class="secondary" type="button">查询督办指标</button>
+              <button id="case-preflight" class="secondary" type="button">检查历史流程</button>
+              <button id="case-intake-policy" class="secondary" type="button" hidden>切换案件受理</button>
+            </div>
+            <pre id="case-metrics" hidden></pre>
+          </details>
+        </div>
+        <section class="card case-column">
+          <div class="title-row"><h2 id="case-title">案件详情</h2><button id="case-export" class="secondary" hidden>导出案件</button></div>
+          <p id="case-caption" class="muted">从待办列表打开一个案件。</p>
+          <div id="case-detail" hidden>
+            <div id="case-overview" class="case-overview"></div>
+            <h3>协作任务</h3>
+            <div id="case-assignments" class="case-items"></div>
+            <details id="case-evidence-panel" open>
+              <summary>证据与版本</summary>
+              <div id="case-evidence" class="case-items"></div>
+              <form id="case-evidence-form" hidden>
+                <div class="two">
+                  <label>材料类型<select id="case-evidence-kind"><option>customer-summary</option><option>order</option><option>payment-proof</option></select></label>
+                  <label>资料来源<input id="case-evidence-source" value="case-file" required></label>
+                </div>
+                <div class="two">
+                  <label>可见组<select id="case-evidence-visibility"><option value="workspace">工作区</option><option value="investigation">调查组</option><option value="finance">财务组</option></select></label>
+                  <label>助手可读字段<input id="case-evidence-fields" placeholder="issue_code"></label>
+                </div>
+                <label>结构化内容<textarea id="case-evidence-data" rows="5" required spellcheck="false"></textarea></label>
+                <label class="case-check"><input id="case-evidence-verified" type="checkbox"> 已核实资料来源</label>
+                <button>登记证据</button>
+              </form>
+            </details>
+            <details>
+              <summary>角色意见</summary>
+              <div class="actions" id="case-assistant-buttons">
+                <button data-assistant="classify" class="secondary">案件分类</button>
+                <button data-assistant="investigate" class="secondary">调查摘要</button>
+                <button data-assistant="recommend" class="secondary">拟办意见</button>
+              </div>
+              <div id="case-suggestions" class="case-items"></div>
+            </details>
+            <details open>
+              <summary>批准与执行</summary>
+              <div id="case-decisions" class="case-items"></div>
+              <form id="case-propose" hidden>
+                <div class="two">
+                  <label>处理动作<select id="case-action"><option value="refund">演示退款</option><option value="close">结案</option></select></label>
+                  <label>金额（最小货币单位）<input id="case-amount" type="number" min="1" value="10000"></label>
+                </div>
+                <label>已核实收款方的内部编号<input id="case-payee" placeholder="demo-original"></label>
+                <label>采用的拟办意见编号（可选）<input id="case-based-on"></label>
+                <label>拟办理由<input id="case-reason" required maxlength="1024"></label>
+                <button>提交待批准决定</button>
+              </form>
+            </details>
+            <details>
+              <summary>时间线与历史关联</summary>
+              <div id="case-links" class="case-items"></div>
+              <div id="case-events" class="case-items"></div>
+              <form id="case-link" class="inline" hidden>
+                <label>已固定工作流的运行编号<input id="case-run-id" required maxlength="32"></label><button>关联运行</button>
+              </form>
+              <form id="case-reopen" class="inline" hidden>
+                <label>重开原因<input id="case-reopen-reason" required maxlength="350"></label><button>重开案件</button>
+              </form>
+            </details>
+          </div>
+        </section>
+      </div>
     </section>
   </main>
 </body>

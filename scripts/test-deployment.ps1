@@ -48,6 +48,23 @@ try {
         node scripts/browser-template.cjs $baseUrl $env:AUTOMATION_TEST_BROWSER_REPORT
         if ($LASTEXITCODE -ne 0) { throw 'Browser workbench scenarios failed.' }
     }
+    if ($env:AUTOMATION_TEST_CASE_BROWSER_REPORT) {
+        $caseEnvironment = @{}
+        try {
+            foreach ($pair in @('investigator/operator','operations/operator','finance/approver','decision-owner/approver')) {
+                $actor, $role = $pair.Split('/')
+                $key = 'AUTOMATION_CASE_TOKEN_' + $actor.ToUpperInvariant().Replace('-','_')
+                $caseEnvironment[$key] = [Environment]::GetEnvironmentVariable($key, 'Process')
+                $provision = & $Php @Extensions bin/automation.php provision deployment test $actor $role 1
+                if ($LASTEXITCODE -ne 0) { throw 'Case test credential provisioning failed.' }
+                [Environment]::SetEnvironmentVariable($key, ($provision | ConvertFrom-Json).token, 'Process')
+            }
+            node scripts/browser-cases.cjs $baseUrl $env:AUTOMATION_TEST_CASE_BROWSER_REPORT
+            if ($LASTEXITCODE -ne 0) { throw 'Browser case scenario failed.' }
+        } finally {
+            foreach ($key in $caseEnvironment.Keys) { [Environment]::SetEnvironmentVariable($key, $caseEnvironment[$key], 'Process') }
+        }
+    }
     Stop-Process -InputObject $worker
     $worker = $null
     Stop-Process -InputObject $web
@@ -69,6 +86,11 @@ try {
     $result = $evidence | ConvertFrom-Json
     & $Php @Extensions tests/restore.php $result.run $result.receipt
     if ($LASTEXITCODE -ne 0) { throw 'Restored data failed verification.' }
+    if ($env:AUTOMATION_TEST_CASE_BROWSER_REPORT) {
+        $caseResult = Get-Content -LiteralPath $env:AUTOMATION_TEST_CASE_BROWSER_REPORT -Raw | ConvertFrom-Json
+        & $Php @Extensions tests/caserestore.php $caseResult.case_id $caseResult.decision_id $caseResult.receipt_id
+        if ($LASTEXITCODE -ne 0) { throw 'Restored case decision failed verification.' }
+    }
     Write-Output $evidence
 } finally {
     foreach ($child in @($worker, $web)) { if ($child -and !$child.HasExited) { Stop-Process -InputObject $child } }

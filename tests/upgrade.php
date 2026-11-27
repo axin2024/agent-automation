@@ -7,17 +7,20 @@ use AgentAutomation\Db;
 use AgentAutomation\Values;
 
 $previous = realpath(getenv('AUTOMATION_TEST_UPGRADE_SOURCE') ?: '');
-if ($previous === false || !is_file($previous . '/VERSION') || trim(file_get_contents($previous . '/VERSION')) !== '1.0.1') {
-    throw new RuntimeException('Set AUTOMATION_TEST_UPGRADE_SOURCE to an extracted v1.0.1 source tree.');
+$previousVersion = $previous !== false && is_file($previous . '/VERSION') ? trim(file_get_contents($previous . '/VERSION')) : '';
+$previousSchema = ['1.0.1' => 2, '1.1.0' => 6][$previousVersion] ?? null;
+if ($previousSchema === null) {
+    throw new RuntimeException('Set AUTOMATION_TEST_UPGRADE_SOURCE to an extracted v1.0.1 or v1.1.0 source tree.');
 }
 
 if (($argv[1] ?? '') === 'seed') {
     require $previous . '/bootstrap.php';
-    seedPrevious($previous);
+    seedPrevious($previous, $previousSchema);
     exit;
 }
 
 require dirname(__DIR__) . '/bootstrap.php';
+require __DIR__ . '/case-fixtures.php';
 $args = [PHP_BINARY, '-d', 'display_errors=stderr', '-d', 'zend.exception_ignore_args=1'];
 if (getenv('AUTOMATION_TEST_PDO_MYSQL_EXTENSION') === '1') {
     array_push($args, '-d', 'extension=pdo_mysql');
@@ -31,8 +34,11 @@ fclose($pipes[1]);
 check(proc_close($child) === 0 && is_string($output), 'run previous release');
 $old = Values::decode($output);
 $db = Db::connect();
+$before = (new Application($db))->cases->preflight(new AgentAutomation\Scope('upgrade-fixture', 'test', 'cli', 'admin'));
+check($before['ownership_conflicts'] === 0 && count($before['legacy_pending']) === 1 && $before['legacy_pending'][0]['id'] === $old['run'],
+    'preflight detects pending work and checks its tenant-scoped workflow');
 $migration = $db->migrate();
-check($migration !== [] && $migration[0] === 3 && $db->migrate() === [], 'upgrade old schema without rewriting previous checksums');
+check($migration === range($previousSchema + 1, 7) && $db->migrate() === [], 'upgrade old schema without rewriting previous checksums');
 $app = new Application($db);
 $scope = $app->access->identify('Bearer ' . $old['token']);
 $id = $old['run'];
@@ -49,13 +55,21 @@ drainUpgrade($app);
 $inbox = $app->deliveries->inbox($scope);
 check(count($inbox) === 1 && $inbox[0]['receipt'] === $old['receipt'] && $app->runs->detail($scope, $id)['result'] === 'sent' &&
     $app->deliveries->operation($scope, $delivery['operation'])['attempts'] === 1, 'finish historical run without a second receipt');
-echo Values::json(['from' => '1.0.1', 'migration' => $migration, 'run' => $id, 'ticket' => $old['ticket'],
-    'operation' => $old['operation'], 'receipt' => $old['receipt'], 'attempts' => 1, 'duplicate_replayed' => true]), PHP_EOL;
+$template = caseTemplate() + ['workflow' => ['name' => $restored['flow'], 'revision' => $restored['graph_revision']]];
+$pinned = $app->caseTemplates->publish($scope, 'returns', 0, $template);
+$newCase = caseIntake($app, $scope, 'legacy-link')['case_id'];
+$app->cases->linkRun($scope, $newCase, 'legacy-link-first', ['run' => $id]);
+$app->cases->linkRun($scope, $newCase, 'legacy-link-repeat', ['run' => $id]);
+check(count($app->cases->detail($scope, $newCase)['runs']) === 1 && $pinned['definition']['workflow']['digest'] === $old['graph_digest'],
+    'Case pins exact legacy workflow revision and deduplicates the run link.');
+echo Values::json(['from' => $previousVersion, 'migration' => $migration, 'previous_schema' => $previousSchema, 'run' => $id, 'ticket' => $old['ticket'],
+    'operation' => $old['operation'], 'receipt' => $old['receipt'], 'attempts' => 1, 'duplicate_replayed' => true,
+    'legacy_graph_digest' => $old['graph_digest'], 'case_id' => $newCase, 'run_links' => 1, 'preflight' => $before]), PHP_EOL;
 
-function seedPrevious(string $previous): void
+function seedPrevious(string $previous, int $schema): void
 {
     $db = Db::connect();
-    check($db->migrate() === [1, 2], 'install old migrations');
+    check($db->migrate() === range(1, $schema), 'install old migrations');
     $app = new Application($db);
     $token = $app->access->provision('upgrade-fixture', 'test', 'legacy-admin', 'admin', 1)['token'];
     $scope = $app->access->identify('Bearer ' . $token);

@@ -64,9 +64,22 @@ summary { cursor: pointer; color: var(--action); margin: 12px 0; }
 #timeline p { padding: 6px 8px; background: var(--surface); border-radius: 5px; overflow-wrap: anywhere; }
 #review, #dispatch, #correction { margin-top: 14px; }
 #filter { margin-top: 10px; }
+.case-grid { display: grid; grid-template-columns: minmax(255px, 1fr) minmax(0, 2fr); gap: 14px; }
+.case-column, .case-items { min-width: 0; display: grid; gap: 10px; align-content: start; }
+.case-column details, .case-column form { margin-top: 5px; }
+.case-overview { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 8px 0 14px; color: var(--subtle); }
+.case-items { margin: 10px 0; }
+.case-item { display: grid; gap: 4px; padding: 9px; background: var(--surface); border-radius: 7px; overflow-wrap: anywhere; }
+.case-item:target, .case-item:focus { outline: 2px solid var(--action); }
+.case-item p, .case-item small { color: var(--subtle); }
+.case-item a { color: var(--action); }
+.case-check input { width: auto; }
+#case-title, #case-caption { overflow-wrap: anywhere; }
+#case-metrics-load { margin-top: 10px; }
+.case-task-controls .two { align-items: end; }
 @media (max-width: 800px) {
   .navigation { flex-wrap: wrap; gap: 10px; }
   .heading, .toolbar { align-items: stretch; flex-direction: column; }
-  .design-grid { grid-template-columns: minmax(0, 1fr); }
+  .design-grid, .case-grid { grid-template-columns: minmax(0, 1fr); }
   .toolbar .inline { flex-wrap: wrap; }
 }

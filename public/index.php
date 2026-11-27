@@ -9,6 +9,7 @@ use AgentAutomation\Problem;
 use AgentAutomation\Values;
 
 require dirname(__DIR__) . '/bootstrap.php';
+require dirname(__DIR__) . '/src/case-routes.php';
 
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -28,7 +29,7 @@ try {
     }
     $app = new Application(Db::connect());
     if ($path === '/api/health' && $method === 'GET') {
-        if ($app->db->one('SELECT version FROM schema_migrations WHERE version=6') === null) {
+        if ($app->db->one('SELECT version FROM schema_migrations WHERE version=7') === null) {
             throw new Problem(503, 'unavailable', 'Workspace migrations are required.');
         }
         respond(['status' => 'ready']);
@@ -44,6 +45,9 @@ try {
     }
     $scope = $app->access->identify($authorization);
     $input = $method === 'POST' ? input() : [];
+    if (str_starts_with($path, '/api/cases') || str_starts_with($path, '/api/case-types')) {
+        caseRoutes($app, $scope, $method, $path, $input);
+    }
     if ($method === 'GET') {
         switch ($path) {
             case '/api/workspace':

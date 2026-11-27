@@ -2,6 +2,8 @@
 
 自托管的 PHP 业务流程与审批工作台。以售后邮件为例，把分类、建单、订单查询、拟稿、审批和收件回执串成可回读的流程。推理可使用规则、测试录制或 OpenAI 兼容接口。执行进度、审批版本、任务去重和本地收件箱由 MySQL 8.4 持久保存。
 
+v2.0 增加跨日售后案件。调查员补齐证据，运营和财务分别复核，拟办人提交决定，两个部门绑定同一版参数完成批准。工作台能查阅角色意见、证据版本、业务期限和执行回执，结案后可新开一轮处理。 [案件指南](docs/cases.md) · [产品需求](docs/requirements/08-售后案件-prd.md) · [验收结果](docs/validation.md)
+
 ## 独立运行
 
 需要 PHP 8.2 及以上、`pdo_mysql`、`curl`、`mbstring`、`openssl` 和 MySQL 8.4。使用 Docker Compose 时，复制 `.env.example` 为 `.env`，为 MySQL 配置两个不同的随机密码，并填入 `openssl rand -hex 32` 生成的加密密钥。

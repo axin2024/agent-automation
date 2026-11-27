@@ -1,0 +1,27 @@
+{
+  "approval_revisions": 3,
+  "assertions": "passed",
+  "batch_resume": [
+    "applied",
+    "rejected",
+    "rejected"
+  ],
+  "delivery_attempts": 1,
+  "duration_samples": {
+    "human-correction": 1,
+    "human-review": 2,
+    "local-inbox": 1,
+    "local-orders": 5
+  },
+  "lifecycle_ms": 5018,
+  "model_mode": "rule/replay-error",
+  "receipt_loss": "reconciled",
+  "retention": {
+    "audit": 1,
+    "metering": 2,
+    "redacted": 1
+  },
+  "scheduled_trigger": "executed-frozen-graph",
+  "schema": "1->2->3->4->5->6->7",
+  "unauthorized_inbox": 0
+}

@@ -16,7 +16,7 @@ $db = Db::connect();
 expect($db->migrate(1) === [1], 'fresh version 1');
 $app = new Application($db);
 $credential = $app->access->provision('demo', 'test', 'coordinator', 'admin', 2);
-expect($db->migrate(2) === [2] && $db->migrate() === [3, 4, 5, 6], 'forward migrations to versions 2 through 6');
+expect($db->migrate(2) === [2] && $db->migrate() === [3, 4, 5, 6, 7], 'forward migrations to versions 2 through 7');
 $admin = $app->access->identify('Bearer ' . $credential['token']);
 $author = makeScope($app, 'demo', 'test', 'author', 'author');
 $operator = makeScope($app, 'demo', 'test', 'operator', 'operator');
@@ -269,7 +269,7 @@ expect($expiry['runs_redacted'] === 0 && $expiry['metering_deleted'] === 2 && $e
     array_sum($app->retention->apply($admin, 10)) === 0, 'separate expiry windows preserve active metering and repeat safely');
 
 echo Values::json([
-    'schema' => '1->2->3->4->5->6', 'approval_revisions' => 3, 'receipt_loss' => 'reconciled',
+    'schema' => '1->2->3->4->5->6->7', 'approval_revisions' => 3, 'receipt_loss' => 'reconciled',
     'batch_resume' => array_column($finished['items'], 'state'),
     'scheduled_trigger' => 'executed-frozen-graph',
     'retention' => ['redacted' => $redaction['runs_redacted'], 'metering' => $expiry['metering_deleted'], 'audit' => $expiry['audit_deleted']],

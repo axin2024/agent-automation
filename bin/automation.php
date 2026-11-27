@@ -5,6 +5,7 @@ declare(strict_types=1);
 use AgentAutomation\Application;
 use AgentAutomation\Db;
 use AgentAutomation\Problem;
+use AgentAutomation\Scope;
 use AgentAutomation\Values;
 
 require dirname(__DIR__) . '/bootstrap.php';
@@ -18,6 +19,7 @@ if (in_array($command, ['help', '--help', '-h'], true)) {
         . "  revoke tenant test|production actor                  Revoke all current tokens for one actor.\n"
         . "  work [steps]                                          Run at most N worker steps.\n"
         . "  worker                                               Poll for workflow or delivery work.\n"
+        . "  case-preflight tenant test|production                 Count legacy records and list pending runs.\n"
         . "  version                                              Read the application version.\n";
     exit(0);
 }
@@ -41,6 +43,9 @@ try {
             ? ['processed' => work($app, isset($args[0]) ? cliInteger($args[0], 1, 100000) : 100)]
             : throw Problem::invalid('Usage: work [steps].'),
         'worker' => $args === [] ? worker($app) : throw Problem::invalid('Usage: worker.'),
+        'case-preflight' => count($args) === 2
+            ? $app->cases->preflight(new Scope(Values::identifier($args[0], 'tenant'), Scope::environment($args[1]), 'cli', 'admin'))
+            : throw Problem::invalid('Usage: case-preflight tenant environment.'),
         default => throw Problem::invalid('Unknown command.'),
     };
     echo Values::json($result), PHP_EOL;
@@ -63,8 +68,18 @@ function cliInteger(string $text, int $min, int $max): int
 function work(Application $app, int $steps): int
 {
     $processed = 0;
-    while ($processed < $steps && ($app->deliveries->pump() || $app->engine->step())) {
-        $processed++;
+    $lanes = [$app->deliveries->pump(...), $app->engine->step(...),
+        $app->caseDispatch->pump(...), $app->cases->escalate(...)];
+    while ($processed < $steps) {
+        $previous = $processed;
+        foreach ($lanes as $lane) {
+            if ($processed < $steps && $lane()) {
+                $processed++;
+            }
+        }
+        if ($processed === $previous) {
+            break;
+        }
     }
     return $processed;
 }
